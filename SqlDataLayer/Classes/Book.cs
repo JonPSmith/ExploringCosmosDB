@@ -2,7 +2,6 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using System.ComponentModel.DataAnnotations;
-using StatusGeneric;
 
 namespace SqlDataLayer.Classes
 {
@@ -41,7 +40,6 @@ namespace SqlDataLayer.Classes
         public IReadOnlyCollection<BookAuthor> AuthorsLink { get; set; }
         public IReadOnlyCollection<Tag> Tags { get; set; }
         public BookDetails Details { get; set; }
-        public string AuthorsOrdered { get; set; }
 
         //----------------------------------------------
 
@@ -54,10 +52,10 @@ namespace SqlDataLayer.Classes
                 : "no reviews";
 
             var tagsString = Tags == null || !Tags.Any()
-                ? ""
-                : $" Tags: " + string.Join(", ", Tags.Select(x => x.TagId));
+                ? "No tags"
+                : "Tags: " + string.Join(", ", Tags.Select(x => x.TagId));
 
-            return $"{Title}: by {authorString}. Price {ActualPrice}, {reviewsString}. Published {PublishedOn:d}{tagsString}";
+            return $"{Title} by {authorString}. Price {ActualPrice}, {reviewsString}, Published {PublishedOn:d}, {tagsString}";
         }
     }
 
