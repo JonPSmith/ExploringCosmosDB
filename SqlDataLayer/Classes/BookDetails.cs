@@ -20,4 +20,4 @@ namespace SqlDataLayer.Classes
 
         public double ReviewsAverageVotes { get; set; }
     }
-}
+}   

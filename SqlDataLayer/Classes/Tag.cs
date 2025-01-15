@@ -10,6 +10,6 @@ namespace SqlDataLayer.Classes
         [MaxLength(40)]
         public string TagId { get; set; }
 
-        public IReadOnlyCollection<Book> Books { get; set; }
+        public ICollection<Book> Books { get; set; }
     }
 }

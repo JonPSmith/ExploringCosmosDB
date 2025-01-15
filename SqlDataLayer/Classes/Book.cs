@@ -36,13 +36,15 @@ namespace SqlDataLayer.Classes
         //---------------------------------------
         //relationships
 
-        public IReadOnlyCollection<Review> Reviews  { get; set; }
-        public IReadOnlyCollection<BookAuthor> AuthorsLink { get; set; }
-        public IReadOnlyCollection<Tag> Tags { get; set; }
+        public ICollection<Review> Reviews  { get; set; }
+        public ICollection<BookAuthor> AuthorsLink { get; set; }
+        public ICollection<Tag> Tags { get; set; }
+        public PriceOffer Promotion { get; set; }
         public BookDetails Details { get; set; }
 
         //----------------------------------------------
 
+        //Useful for testing
         public override string ToString()
         {
             var authors = AuthorsLink?.OrderBy(x => x.Order).Select(x => x.Author.Name);
@@ -55,7 +57,8 @@ namespace SqlDataLayer.Classes
                 ? "No tags"
                 : "Tags: " + string.Join(", ", Tags.Select(x => x.TagId));
 
-            return $"{Title} by {authorString}. Price {ActualPrice}, {reviewsString}, Published {PublishedOn:d}, {tagsString}";
+            return $"{Title} by {authorString}. Price {ActualPrice}, {reviewsString}," +
+                   $" Published by {Publisher} on {PublishedOn:d}, {tagsString}";
         }
     }
 

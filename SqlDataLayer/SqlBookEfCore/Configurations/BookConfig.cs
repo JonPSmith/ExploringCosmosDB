@@ -22,8 +22,8 @@ namespace SqlDataLayer.SqlBookEfCore.Configurations
             entity.HasMany(x => x.Tags)
                 .WithMany(x => x.Books)
                 .UsingEntity<BookTag>(
-                    x => x.HasOne(x => x.Tag).WithMany().HasForeignKey(x => x.TagId),
-                    x => x.HasOne(x => x.Book).WithMany().HasForeignKey(x => x.BookId));
+                    x => x.HasOne(x => x.Tag).WithMany().HasForeignKey(y => y.TagId),
+                    x => x.HasOne(x => x.Book).WithMany().HasForeignKey(y => y.BookId));
 
         }
     }

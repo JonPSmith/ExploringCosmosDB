@@ -20,7 +20,7 @@ namespace SqlDataLayer.Classes
         //-----------------------------------------
         //Relationships
 
-        public int BookId { get; set; }
+        public Book Book { get; set; }
     }
 
 }

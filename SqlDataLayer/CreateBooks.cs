@@ -1,15 +1,36 @@
 ﻿using SqlDataLayer.Classes;
 
-namespace GenerateBooks;
+namespace SqlDataLayer;
 
-public static class CreateBooks
-{ 
-    public static Book CreateSqlBook(
+public static class CreateSqlBooks
+{
+   
+    /// <summary>
+    /// This creates a Book using the parameter data.
+    /// NOTE: It doesn't set the following parts of the <see cref="Book"/> class
+    /// - No BookDetails
+    /// - The Author class has a null Email
+    /// </summary>
+    /// <param name="title"></param>
+    /// <param name="publishedOn"></param>
+    /// <param name="estimatedDate"></param>
+    /// <param name="publisher"></param>
+    /// <param name="price"></param>
+    /// <param name="imageUrl"></param>
+    /// <param name="authorsNames"></param>
+    /// <param name="tags"></param>
+    /// <param name="reviews"></param>
+    /// <param name="promotion"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public static Book CreateBook(
         string title, DateOnly publishedOn,
         bool estimatedDate,
         string publisher, decimal price, string imageUrl,
         ICollection<string> authorsNames,
-        ICollection<Tag> tags)
+        ICollection<Tag> tags,
+        ICollection<Review> reviews,
+        PriceOffer promotion = null)
     {
         if (string.IsNullOrEmpty(title)) throw new ArgumentException("Value cannot be null or empty.", nameof(title));
         if (authorsNames == null || !authorsNames.Any()) throw new ArgumentException("Value cannot be null or empty.", nameof(title));
@@ -24,13 +45,15 @@ public static class CreateBooks
             ActualPrice = price,
             ImageUrl = imageUrl,
             Tags = new HashSet<Tag>(tags),
-            Reviews = new HashSet<Review>()
-            
-            //Reviews to be added when building test data
-            //We need to initialise the AuthorsOrdered string when the entry is created
-            //NOTE: We must NOT initialise the ReviewsCount and the ReviewsAverageVotes as they default to zero
+            Promotion = promotion
         };
-        
+
+        foreach (var review in reviews)
+        {
+            review.Book = book;
+        }
+        book.Reviews = reviews;
+
         byte order = 0;
         book.AuthorsLink = new HashSet<BookAuthor>(
             authorsNames.Select(a =>
