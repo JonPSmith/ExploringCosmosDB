@@ -15,7 +15,6 @@ namespace SqlDataLayer.Classes
         public string Title { get; set; }
 
         public DateOnly PublishedOn { get; set; }
-        public bool EstimatedDate { get; set; }
 
         public string Publisher { get; set; }
         public decimal OrgPrice { get; set; }
@@ -49,7 +48,7 @@ namespace SqlDataLayer.Classes
         {
             var authors = AuthorsLink?.OrderBy(x => x.Order).Select(x => x.Author.Name);
             var authorString = string.Join(", ", authors);
-            var reviewsString = Reviews.Any()
+            var reviewsString = Reviews != null && Reviews.Any()
                 ? $"{Reviews.Count()} reviews, stars = {Reviews.Average(item => item.NumStars):#.##}"
                 : "no reviews";
 
@@ -57,8 +56,16 @@ namespace SqlDataLayer.Classes
                 ? "No tags"
                 : "Tags: " + string.Join(", ", Tags.Select(x => x.TagId));
 
-            return $"{Title} by {authorString}. Price {ActualPrice}, {reviewsString}," +
-                   $" Published by {Publisher} on {PublishedOn:d}, {tagsString}";
+            string bookString = $"{Title} by {authorString}. Price {ActualPrice}, {reviewsString}," +
+                $" Published by {Publisher} on {PublishedOn:d}, {tagsString}";
+
+            if (Details != null)
+                bookString += Environment.NewLine + 
+                              (Details.Description != null && Details.Description != BookDetails.NoDetailsAvailable
+                    ? $"More data can be found in the {nameof(Details)} data."
+                    : BookDetails.NoDetailsAvailable);
+            
+            return bookString;
         }
     }
 

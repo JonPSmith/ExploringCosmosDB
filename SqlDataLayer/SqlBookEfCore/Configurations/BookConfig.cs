@@ -14,16 +14,12 @@ namespace SqlDataLayer.SqlBookEfCore.Configurations
             entity.HasIndex(x => x.PublishedOn);
             entity.HasIndex(x => x.ActualPrice);
 
-            entity.HasOne(x => x.Details)
-                .WithOne()
-                .HasForeignKey<BookDetails>(x => x.BookDetailsId);
-
-            //Had to manually configure a BookTag because EfCore.GenericServices can't (yet) handle index entities
-            entity.HasMany(x => x.Tags)
-                .WithMany(x => x.Books)
-                .UsingEntity<BookTag>(
-                    x => x.HasOne(x => x.Tag).WithMany().HasForeignKey(y => y.TagId),
-                    x => x.HasOne(x => x.Book).WithMany().HasForeignKey(y => y.BookId));
+            // //Had to manually configure a BookTag because EfCore.GenericServices can't (yet) handle index entities
+            // entity.HasMany(x => x.Tags)
+            //     .WithMany(x => x.Books)
+            //     .UsingEntity<BookTag>(
+            //         x => x.HasOne(x => x.Tag).WithMany().HasForeignKey(y => y.TagId),
+            //         x => x.HasOne(x => x.Book).WithMany().HasForeignKey(y => y.BookId));
 
         }
     }

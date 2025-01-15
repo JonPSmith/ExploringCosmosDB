@@ -1,10 +1,11 @@
 ﻿using SqlDataLayer.Classes;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace SqlDataLayer;
 
 public static class CreateSqlBooks
 {
-   
     /// <summary>
     /// This creates a Book using the parameter data.
     /// NOTE: It doesn't set the following parts of the <see cref="Book"/> class
@@ -13,19 +14,17 @@ public static class CreateSqlBooks
     /// </summary>
     /// <param name="title"></param>
     /// <param name="publishedOn"></param>
-    /// <param name="estimatedDate"></param>
     /// <param name="publisher"></param>
     /// <param name="price"></param>
     /// <param name="imageUrl"></param>
     /// <param name="authorsNames"></param>
     /// <param name="tags"></param>
     /// <param name="reviews"></param>
-    /// <param name="promotion"></param>
+    /// <param name="promotion">Optional parameter</param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
     public static Book CreateBook(
         string title, DateOnly publishedOn,
-        bool estimatedDate,
         string publisher, decimal price, string imageUrl,
         ICollection<string> authorsNames,
         ICollection<Tag> tags,
@@ -39,7 +38,6 @@ public static class CreateSqlBooks
         {
             Title = title,
             PublishedOn = publishedOn,
-            EstimatedDate = estimatedDate,
             Publisher = publisher,
             OrgPrice = price,
             ActualPrice = price,
@@ -48,11 +46,8 @@ public static class CreateSqlBooks
             Promotion = promotion
         };
 
-        foreach (var review in reviews)
-        {
-            review.Book = book;
-        }
-        book.Reviews = reviews;
+        if (reviews != null)
+            book.Reviews = reviews;
 
         byte order = 0;
         book.AuthorsLink = new HashSet<BookAuthor>(

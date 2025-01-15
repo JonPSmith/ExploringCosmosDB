@@ -1,7 +1,6 @@
 ﻿// Copyright (c) 2025 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
-using GenerateBooks;
 using Microsoft.EntityFrameworkCore;
 using SqlDataLayer;
 using SqlDataLayer.Classes;
@@ -22,7 +21,7 @@ public class TestCreateSqlBook(ITestOutputHelper output)
 
         //ATTEMPT
         var book = CreateSqlBooks.CreateBook(
-            "Book title", new DateOnly(2025, 1, 13), false, 
+            "Book title", new DateOnly(2025, 1, 13), 
             "Manning", 123, null, 
             new List<string> { "author1", "author2" },
             new List<Tag>{ new Tag{ TagId = "My Tag"} }, 
@@ -44,7 +43,7 @@ public class TestCreateSqlBook(ITestOutputHelper output)
         context.Database.EnsureClean();
 
         var book = CreateSqlBooks.CreateBook(
-            "Book title", new DateOnly(2025, 1, 13), false,
+            "Book title", new DateOnly(2025, 1, 13), 
             "Manning", 123, null,
             new List<string> { "author1", "author2" },
             new List<Tag> { new Tag { TagId = "My Tag" } },

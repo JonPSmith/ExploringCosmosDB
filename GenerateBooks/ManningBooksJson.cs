@@ -28,7 +28,7 @@ public class ManningBooksJson
 
 public class Productoffering
 {
-    public float price { get; set; }
+    public Decimal price { get; set; }
     public int id { get; set; }
     public string productType { get; set; }
 }
