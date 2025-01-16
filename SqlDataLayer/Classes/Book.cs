@@ -55,17 +55,9 @@ namespace SqlDataLayer.Classes
             var tagsString = Tags == null || !Tags.Any()
                 ? "No tags"
                 : "Tags: " + string.Join(", ", Tags.Select(x => x.TagId));
-
-            string bookString = $"{Title} by {authorString}. Price {ActualPrice}, {reviewsString}," +
-                $" Published by {Publisher} on {PublishedOn:d}, {tagsString}";
-
-            if (Details != null)
-                bookString += Environment.NewLine + 
-                              (Details.Description != null && Details.Description != BookDetails.NoDetailsAvailable
-                    ? $"More data can be found in the {nameof(Details)} data."
-                    : BookDetails.NoDetailsAvailable);
             
-            return bookString;
+            return $"{Title} by {authorString}. Price {ActualPrice}, {reviewsString}," +
+                   $" Published by {Publisher} on {PublishedOn:d}, {tagsString}";
         }
     }
 

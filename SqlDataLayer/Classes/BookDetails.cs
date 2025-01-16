@@ -6,12 +6,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SqlDataLayer.Classes;
 
-[Table("Books")]
-[NotMapped]
+
 public class BookDetails
 {
     public const string NoDetailsAvailable = "No extra details for this book";
 
+    public int BookDetailsId { get; set; }
     public string Description { get; set; }
     public string AboutAuthor { get; set; }
     public string AboutReader { get; set; }

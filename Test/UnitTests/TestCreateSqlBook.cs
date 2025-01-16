@@ -24,14 +24,12 @@ public class TestCreateSqlBook(ITestOutputHelper output)
             "Book title", new DateOnly(2025, 1, 13), 
             "Manning", 123, null, 
             new List<string> { "author1", "author2" },
-            new List<Tag>{ new Tag{ TagId = "My Tag"} }, 
-            new List<Review> { new Review{NumStars = 5, Comment = "Great!", VoterName = "MrBig"} });
+            new List<Tag>{ new Tag{ TagId = "My Tag"}} );
 
         //VERIFY
         output.WriteLine(book.ToString());
         book.ToString().ShouldEqual(
-            "Book title by author1, author2. Price 123, " +
-            "1 reviews, stars = 5, Published by Manning on 13/01/2025, Tags: My Tag");
+            "Book title by author1, author2. Price 123, no reviews, Published by Manning on 13/01/2025, Tags: My Tag");
     }
 
     [Fact]
@@ -46,8 +44,7 @@ public class TestCreateSqlBook(ITestOutputHelper output)
             "Book title", new DateOnly(2025, 1, 13), 
             "Manning", 123, null,
             new List<string> { "author1", "author2" },
-            new List<Tag> { new Tag { TagId = "My Tag" } },
-            new List<Review> { new Review { NumStars = 5, Comment = "Great!", VoterName = "MrBig" } });
+            new List<Tag> { new Tag { TagId = "My Tag" } });
 
         //ATTEMPT
         context.Add(book);
@@ -65,12 +62,11 @@ public class TestCreateSqlBook(ITestOutputHelper output)
             .FirstOrDefault();
         bookdb.ShouldNotBeNull();
         bookdb.AuthorsLink.Count.ShouldEqual(2);
-        bookdb.Reviews.Count.ShouldEqual(1);
+        bookdb.Reviews.Count.ShouldEqual(0);
         bookdb.Tags.Count.ShouldEqual(1);
         bookdb.Promotion.ShouldBeNull();
 
         book.ToString().ShouldEqual(
-            "Book title by author1, author2. Price 123, " +
-            "1 reviews, stars = 5, Published by Manning on 13/01/2025, Tags: My Tag");
+            "Book title by author1, author2. Price 123, no reviews, Published by Manning on 13/01/2025, Tags: My Tag");
     }
 }

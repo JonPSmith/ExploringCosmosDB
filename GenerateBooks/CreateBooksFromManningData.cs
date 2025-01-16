@@ -6,6 +6,7 @@ using SqlDataLayer.Classes;
 using Microsoft.IdentityModel.Tokens;
 using TestSupport.Helpers;
 using SqlDataLayer;
+using System.Text.RegularExpressions;
 
 namespace GenerateBooks;
 
@@ -25,6 +26,7 @@ public static class CreateBooksFromManningData
 
         var tagsNames = summaryJson.SelectMany(x => x.tags ?? []).Distinct().ToList();
         var tagsDict = tagsNames.ToDictionary(x => x, y => new Tag{TagId = y});
+        var authorsDict = NormalizeAuthorsToCommaDelimited(summaryJson);
 
         foreach (var jsonBook in summaryJson.Where(x => !x.authorshipDisplay.IsNullOrEmpty()))
         {
@@ -33,12 +35,13 @@ public static class CreateBooksFromManningData
             var price = jsonBook.productOfferings.Any()
                 ? jsonBook.productOfferings.Select(x => x.price).Max()
                 : 100;
-            var authors = jsonBook.authorshipDisplay.Split(',');
+            var authors = jsonBook.authorshipDisplay.Split(',')
+                .Select(x => authorsDict[x].Name).ToList();
             var tags = (jsonBook.tags ?? [])
                 .Select(x => tagsDict[x]).ToList();
 
             var book = CreateSqlBooks.CreateBook(jsonBook.title, publishedOn, PublisherString,
-                price, fullImageUrl, authors, tags, null);
+                price, fullImageUrl, authors, tags);
 
             if (detailDict.ContainsKey(jsonBook.id))
             {
@@ -63,4 +66,66 @@ public static class CreateBooksFromManningData
         }
     }
 
+    private static Dictionary<string, Author> NormalizeAuthorsToCommaDelimited(List<ManningBooksJson> summaryJson)
+    {
+        var authorDict = new Dictionary<string, Author>();
+        foreach (var manningBooksJson in summaryJson)
+        {
+            var authors = NormalizeAuthorNames(manningBooksJson).ToList();
+            manningBooksJson.authorshipDisplay = authors.Any()
+                ? string.Join(',', authors)
+                : null;
+            authors.ForEach(name =>
+            {
+                if (!authorDict.ContainsKey(name))
+                    authorDict[name] = new Author{Name = name};
+            });
+        }
+
+        return authorDict;
+    }
+
+    //This decodes The authorshipDisplay string which contains lots of different formats
+    internal static IEnumerable<string> NormalizeAuthorNames(ManningBooksJson json)
+    {
+        const string withChaptersBy = "With chapters selected by";
+        //The formats for authors are
+        //- Author1
+        //- Author1 and Author2
+        //- Author1, Author2
+        //- Author1, Author2 with Author3
+        //- Author1<br><i>Foreword by ...
+        //- Author1 Edited by
+        //- With chapters selected by ...
+        //- contributions by
+        //- Author1, Ph.D.
+        //- null 
+
+        if (json.authorshipDisplay == null)
+            return new string[0];
+
+        var authorString = json.authorshipDisplay.StartsWith(withChaptersBy)
+            ? json.authorshipDisplay.Substring(withChaptersBy.Length)
+            : json.authorshipDisplay;
+
+        var breakIndex = authorString.IndexOf("<"); //<br><i>Foreword by 
+        if (breakIndex > 0)
+            authorString = authorString.Substring(0, breakIndex);
+        var editedIndex = authorString.IndexOf("Edited by");
+        if (editedIndex > 0)
+            authorString = authorString.Substring(0, editedIndex);
+
+        authorString = authorString
+            .Replace("  ", " ")
+            .Replace("Ph.D.", "")
+            .Replace("contributions by", ",")
+            .Replace(" with ", ",")
+            .Replace(" and ", ",");
+        if (Regex.Match(authorString, @";|#|&").Success)//Some name come out wrong - don't know why
+            return new string[0];
+
+        var authors = authorString.Split(',').Where(x => !string.IsNullOrWhiteSpace(x)).Select(y => y.Trim());
+
+        return authors;
+    }
 }
