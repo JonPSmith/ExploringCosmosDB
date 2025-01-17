@@ -13,9 +13,6 @@ namespace SqlDataLayer.Classes
         [MaxLength(100)]
         public string Name { get; set; }
 
-        [MaxLength(100)]
-        public string Email { get; set; }
-
         //------------------------------
         //Relationships
 

@@ -69,4 +69,32 @@ public class TestCreateSqlBook(ITestOutputHelper output)
         book.ToString().ShouldEqual(
             "Book title by author1, author2. Price 123, no reviews, Published by Manning on 13/01/2025, Tags: My Tag");
     }
+
+    [Fact]
+    public void TestCreateTwoBook_ToDatabase()
+    {
+        //SETUP
+        var options = this.CreateUniqueClassOptions<BookSqlDbContext>();
+        using var context = new BookSqlDbContext(options);
+        context.Database.EnsureClean();
+
+        var book1 = CreateSqlBooks.CreateBook(
+            "Book title", new DateOnly(2025, 1, 13),
+            "Manning", 123, null,
+            new List<string> { "author1", "author2" },
+            new List<Tag> { new Tag { TagId = "My Tag" } });
+        var book2 = CreateSqlBooks.CreateBook(
+            "Book title", new DateOnly(2025, 1, 13),
+            "Manning", 123, null,
+            new List<string> { "author1", "author2" },
+            new List<Tag> { new Tag { TagId = "My Tag" } });
+
+        //ATTEMPT
+        context.Add(book1);
+        context.Add(book2);
+        context.SaveChanges();
+
+        //VERIFY
+        context.ChangeTracker.Clear();
+    }
 }

@@ -15,13 +15,23 @@ public static class CreateBooksFromManningData
     private const string ImageUrlPrefix = "https://images.manning.com/360/480/resize/";
     public const string PublisherString = "Manning publications";
 
-    public static IEnumerable<Book> CreateManningBooks()
+
+    /// <summary>
+    /// This creates Books from the real-world data from Manning publications. To handle
+    /// SQL books, where you can't have duplicable Author or Tag entity.
+    /// Note: These generated books don't have any Reviews or PriceOffer entities. 
+    /// </summary>
+    /// <param name="numBooks"></param>
+    /// <returns>Sql Books</returns>
+    public static IEnumerable<Book> CreateSqlManningBooks(int numBooks)
     {
+        //We take all the 
         var summaryFilePath = TestData.GetFilePath("ManningBooks-20200814.json");
-        var summaryJson = JsonConvert.DeserializeObject<List<ManningBooksJson>>(File.ReadAllText(summaryFilePath));
+        var summaryJson = JsonConvert.DeserializeObject<List<ManningBooksJson>>(
+            File.ReadAllText(summaryFilePath)).Take(numBooks);
         var detailFilePath = TestData.GetFilePath("ManningDetails-20200723.json");
         var detailDict = JsonConvert.DeserializeObject<List<ManningDetailsJson>>(
-                File.ReadAllText(detailFilePath))
+                File.ReadAllText(detailFilePath))!.Take(numBooks)
             .ToDictionary(x => x.productId);
 
         var tagsNames = summaryJson.SelectMany(x => x.tags ?? []).Distinct().ToList();
@@ -66,7 +76,7 @@ public static class CreateBooksFromManningData
         }
     }
 
-    private static Dictionary<string, Author> NormalizeAuthorsToCommaDelimited(List<ManningBooksJson> summaryJson)
+    private static Dictionary<string, Author> NormalizeAuthorsToCommaDelimited(IEnumerable<ManningBooksJson> summaryJson)
     {
         var authorDict = new Dictionary<string, Author>();
         foreach (var manningBooksJson in summaryJson)
