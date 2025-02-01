@@ -4,62 +4,28 @@
     ViewData["Title"] = "Home Page";
 }
 
+<h2>Welcome to the ExploringCosmosDB book app</h2>
 
-<p><span class="text-primary h2">SQL server</span>.</p>
+<p>
+    This application is designed to display, sort or filter some books using either a SQL server database 
+    or a Cosmos DB database. This allows to compare
+    <ul>
+        <li>How EF Core handles the SQL server version and the Cosmos DB database.</li>
+        <li>The best way to store the books in Cosmos DB, e.g. 
+            <a href="https://learn.microsoft.com/en-us/azure/cosmos-db/partitioning-overview">Partitioning and partition keys</a>
+        </li>
+        <li>
+            Compare the performance of the SQL server version against the Cosmos DB version
+        </li>
+    </ul>
+</p>
 
-<form id="sort-filter-form" role="form">
-    <div class="row">
-        <div class="col-sm-3">
-            <label>Sort By</label>
-            <select asp-for="SortFilterPageData" name="OrderByOptions"
-                    asp-items="Html.GetEnumSelectList<SqlServiceLayer.OrderByOptions>()"
-                    class="form-control sort-filter-width"
-                    onchange="BookList.sendForm(this)"></select>
-        </div>
+<h4>Things to do</h4>
+<ul>
 
-        <div class="col-sm-3">
-            <label>Filter Type</label>
-            <select asp-for="SortFilterPageData.FilterBy" name="FilterBy"
-                    asp-items="Html.GetEnumSelectList<SqlServiceLayer.BooksFilterBy>()"
-                    class="form-control sort-filter-width"
-                    onchange="BookList.filterByHasChanged(this)"></select>
-        </div>
+    <li>
+        Click <a asp-area="" asp-controller="SqlBooks" asp-action="Index">this link</a> to see the SQL server version of the books
+        <br />
+    </li>
+</ul>
 
-        <div class="col-sm-3 dim-filter-value" id="filter-value-group">
-            <label>Filter By</label>
-            <select asp-for="SortFilterPageData.FilterValue" name="FilterValue"
-                    id="filter-value-dropdown"
-                    class="form-control sort-filter-width"
-                    @*disabled*@
-                    onchange="BookList.sendForm(this)">
-                <option>Select filter type...</option>
-            </select>
-        </div>
-
-        <div class="col-sm-2">
-            <label>Page</label>
-            <div>
-                <input asp-for="SortFilterPageData.PageNum" name="PageNum"
-                       class="form-control page-control-width page-num-input"
-                       onchange="BookList.sendForm(this)">
-                <span class="num-pages-text">of @Model.SortFilterPageData.NumPages</span>
-            </div>
-        </div>
-
-        @*<div class="col-sm-1">
-            <label>Page&nbsp;Size</label>
-            <select asp-for="SortFilterPageData.PageSize" name="PageSize"
-                    asp-items="Model.SortFilterPageData.PageSizes.Select(x => new SelectListItem {Text = x.ToString(), Value = x.ToString()})"
-                    class="form-control page-control-width"
-                    onchange="BookList.sendForm(this)"></select>
-        </div>*@
-    </div>
-
-    <input id="PrevCheckState" name="PrevCheckState" type="hidden" value=@Model.SortFilterPageData.PrevCheckState>
-</form>
-<br />
-
-@*<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>*@

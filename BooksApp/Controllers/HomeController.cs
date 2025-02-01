@@ -1,6 +1,5 @@
 using BooksApp.Models;
 using Microsoft.AspNetCore.Mvc;
-using SqlServiceLayer;
 using System.Diagnostics;
 
 namespace BooksApp.Controllers
@@ -16,7 +15,7 @@ namespace BooksApp.Controllers
 
         public IActionResult Index()
         {
-            return View(new BookListCombinedDto(new SortFilterPageOptions(), null));
+            return View();
         }
 
         public IActionResult Privacy()

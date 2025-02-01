@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SqlServiceLayer
+namespace CommonServiceLayer
 {
     public enum OrderByOptions
     {

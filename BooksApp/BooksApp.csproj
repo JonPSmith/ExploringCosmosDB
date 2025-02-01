@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CommonServiceLayer\CommonServiceLayer.csproj" />
     <ProjectReference Include="..\GenerateBooks\GenerateBooks.csproj" />
     <ProjectReference Include="..\SqlDataLayer\SqlDataLayer.csproj" />
     <ProjectReference Include="..\SqlServiceLayer\SqlServiceLayer.csproj" />

@@ -1,0 +1,69 @@
+﻿@using System.Reflection.Metadata.Ecma335
+@using CommonServiceLayer
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using SqlServiceLayer
+@model SqlServiceLayer.BookListCombinedDto
+@{
+    ViewData["Title"] = "SQL server version";
+    var disableIt = Model.SortFilterPageData.FilterBy == BooksFilterBy.NoFilter ? "disabled" : "";
+}
+
+
+<p><span class="text-primary h2">SQL server version</span></p>
+
+<form id="sort-filter-form" role="form">
+    <div class="row">
+        <div class="col-sm-3">
+            <label>Sort By</label>
+            <select asp-for="SortFilterPageData" name="OrderByOptions"
+                    asp-items="Html.GetEnumSelectList<OrderByOptions>()"
+                    class="form-control sort-filter-width"
+                    onchange="BookList.sendForm(this)"></select>
+        </div>
+
+        <div class="col-sm-3">
+            <label>Filter Type</label>
+            <select asp-for="SortFilterPageData.FilterBy" name="FilterBy"
+                    asp-items="Html.GetEnumSelectList<BooksFilterBy>()"
+                    class="form-control sort-filter-width"
+                    onchange="BookList.filterByHasChanged(this)"></select>
+        </div>
+        
+
+        <div class="col-sm-3 dim-filter-value" id="filter-value-group">
+            <label>Filter By</label>
+            <select asp-for="SortFilterPageData.FilterValue" name="FilterValue"
+                    id="filter-value-dropdown"
+                    class="form-control sort-filter-width"
+                    onchange="BookList.sendForm(this)">
+                <option>Select filter type...</option>
+            </select>
+        </div>
+
+        <div class="col-sm-2">
+            <label>Page</label>
+            <div>
+                <input asp-for="SortFilterPageData.PageNum" name="PageNum"
+                       class="form-control page-control-width page-num-input"
+                       onchange="BookList.sendForm(this)">
+                <span class="num-pages-text">of @Model.SortFilterPageData.NumPages</span>
+            </div>
+        </div>
+
+        <div class="col-sm-1">
+            <label>Page&nbsp;Size</label>
+            <select asp-for="SortFilterPageData.PageSize" name="PageSize"
+                    asp-items="Model.SortFilterPageData.PageSizes.Select(x => new SelectListItem {Text = x.ToString(), Value = x.ToString()})"
+                    class="form-control page-control-width"
+                    onchange="BookList.sendForm(this)"></select>
+        </div>
+    </div>
+
+    <input id="PrevCheckState" name="PrevCheckState" type="hidden" value=@Model.SortFilterPageData.PrevCheckState>
+</form>
+<br />
+
+@*<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>*@
