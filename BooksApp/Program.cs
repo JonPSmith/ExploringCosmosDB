@@ -1,4 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using SqlDataLayer.SqlBookEfCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("SqlBooksConnection");
+builder.Services.AddDbContext<BookSqlDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+
+
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
