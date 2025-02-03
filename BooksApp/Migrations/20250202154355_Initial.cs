@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace BooksApp.Models
+namespace BooksApp.Migrations
 {
     /// <inheritdoc />
     public partial class Initial : Migration
@@ -15,8 +15,7 @@ namespace BooksApp.Models
                 name: "Authors",
                 columns: table => new
                 {
-                    AuthorId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AuthorId = table.Column<byte>(type: "tinyint", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
@@ -61,8 +60,8 @@ namespace BooksApp.Models
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PublishedOn = table.Column<DateOnly>(type: "date", nullable: false),
                     Publisher = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OrgPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ActualPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    OrgPrice = table.Column<decimal>(type: "decimal(9,2)", precision: 9, scale: 2, nullable: false),
+                    ActualPrice = table.Column<decimal>(type: "decimal(9,2)", precision: 9, scale: 2, nullable: false),
                     PromotionalText = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     ImageUrl = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     ManningBookUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -84,17 +83,17 @@ namespace BooksApp.Models
                 {
                     BookId = table.Column<int>(type: "int", nullable: false),
                     AuthorId = table.Column<int>(type: "int", nullable: false),
-                    Order = table.Column<byte>(type: "tinyint", nullable: false)
+                    Order = table.Column<byte>(type: "tinyint", nullable: false),
+                    AuthorId1 = table.Column<byte>(type: "tinyint", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BookAuthor", x => new { x.BookId, x.AuthorId });
                     table.ForeignKey(
-                        name: "FK_BookAuthor_Authors_AuthorId",
-                        column: x => x.AuthorId,
+                        name: "FK_BookAuthor_Authors_AuthorId1",
+                        column: x => x.AuthorId1,
                         principalTable: "Authors",
-                        principalColumn: "AuthorId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "AuthorId");
                     table.ForeignKey(
                         name: "FK_BookAuthor_Books_BookId",
                         column: x => x.BookId,
@@ -170,9 +169,9 @@ namespace BooksApp.Models
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookAuthor_AuthorId",
+                name: "IX_BookAuthor_AuthorId1",
                 table: "BookAuthor",
-                column: "AuthorId");
+                column: "AuthorId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Books_ActualPrice",

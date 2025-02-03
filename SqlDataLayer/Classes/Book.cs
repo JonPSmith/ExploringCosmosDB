@@ -17,6 +17,7 @@ namespace SqlDataLayer.Classes
         public DateOnly PublishedOn { get; set; }
 
         public string Publisher { get; set; }
+
         public decimal OrgPrice { get; set; }
         public decimal ActualPrice { get; set; }
 
@@ -36,7 +37,8 @@ namespace SqlDataLayer.Classes
         //relationships
 
         public ICollection<Review> Reviews  { get; set; }
-        public ICollection<BookAuthor> AuthorsLink { get; set; }
+        public ICollection<Author> Authors { get; set; }
+        public List<BookAuthor> BookAuthors { get; set; }
         public ICollection<Tag> Tags { get; set; }
         public PriceOffer Promotion { get; set; }
         public BookDetails Details { get; set; }
@@ -46,7 +48,7 @@ namespace SqlDataLayer.Classes
         //Useful for testing
         public override string ToString()
         {
-            var authors = AuthorsLink?.OrderBy(x => x.Order).Select(x => x.Author.Name);
+            var authors = BookAuthors.OrderBy(x => x.Order).Select(x => x.Author.Name);
             var authorString = string.Join(", ", authors);
             var reviewsString = Reviews != null && Reviews.Any()
                 ? $"{Reviews.Count()} reviews, stars = {Reviews.Average(item => item.NumStars):#.##}"

@@ -1,4 +1,5 @@
-﻿using SqlDataLayer.Classes;
+﻿using System.Security.Cryptography.X509Certificates;
+using SqlDataLayer.Classes;
 
 namespace SqlDataLayer;
 
@@ -32,20 +33,22 @@ public static class CreateSqlBooks
         var book = new Book
         {
             Title = title,
+            Authors = new List<Author>(authorsNames.Select(x => new Author{Name = x})),
             PublishedOn = publishedOn,
             Publisher = publisher,
             OrgPrice = price,
             ActualPrice = price,
             ImageUrl = imageUrl,
-            Tags = new HashSet<Tag>(tags),
+            Tags = new HashSet<Tag>(tags)
         };
 
+        book.BookAuthors = new List<BookAuthor>();
         byte order = 0;
-        book.AuthorsLink = new HashSet<BookAuthor>(
-            authorsNames.Select(a =>
-                new BookAuthor{Book = book, Author = new Author{Name = a}, Order = order++}));
-        if (!book.AuthorsLink.Any())
-            throw new ArgumentException("Value cannot be null or empty.", nameof(authorsNames));
+        foreach (var author in book.Authors)
+        {
+            book.BookAuthors.Add(new BookAuthor { Book = book, Author = author, Order = order });
+            order++;
+        }
 
         return book;
     }

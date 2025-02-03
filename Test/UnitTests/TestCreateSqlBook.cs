@@ -54,14 +54,14 @@ public class TestCreateSqlBook(ITestOutputHelper output)
         context.ChangeTracker.Clear();
         output.WriteLine(book.ToString());
         var bookdb = context.Books
-            .Include(x => x.AuthorsLink)
-                .ThenInclude(bookAuthor => bookAuthor.Author)
+            .Include(x => x.Authors)
+                .ThenInclude(y => y.BookAuthors)
             .Include(x => x.Reviews)
             .Include(x => x.Tags)
             .Include(x => x.Promotion)
             .FirstOrDefault();
         bookdb.ShouldNotBeNull();
-        bookdb.AuthorsLink.Count.ShouldEqual(2);
+        bookdb.BookAuthors.Count.ShouldEqual(2);
         bookdb.Reviews.Count.ShouldEqual(0);
         bookdb.Tags.Count.ShouldEqual(1);
         bookdb.Promotion.ShouldBeNull();

@@ -1,11 +1,9 @@
-﻿@using System.Reflection.Metadata.Ecma335
-@using CommonServiceLayer
+﻿@using CommonServiceLayer
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using SqlServiceLayer
 @model SqlServiceLayer.BookListCombinedDto
 @{
     ViewData["Title"] = "SQL server version";
-    var disableIt = Model.SortFilterPageData.FilterBy == BooksFilterBy.NoFilter ? "disabled" : "";
 }
 
 

@@ -7,7 +7,7 @@ namespace SqlDataLayer.Classes
 {
     public class Author
     {
-        public int AuthorId { get; set; }
+        public byte AuthorId { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [MaxLength(100)]
@@ -16,6 +16,7 @@ namespace SqlDataLayer.Classes
         //------------------------------
         //Relationships
 
-        public ICollection<BookAuthor> BooksLink { get; set; }
+        public ICollection<Book> Books { get; set; }
+        public List<BookAuthor> BookAuthors { get; set; }
     }
 }

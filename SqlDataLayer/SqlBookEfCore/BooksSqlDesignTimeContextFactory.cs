@@ -8,9 +8,9 @@ namespace SqlDataLayer.SqlBookEfCore;
 
 public class BooksSqlDesignTimeContextFactory : IDesignTimeDbContextFactory<BookSqlDbContext>
 {
-    // This connection links to an invalidate database, but that's OK as I only used the Add-Migration command
+    //This connection string MUST match the SqlBooksConnection connection string in the BooksApp's appsettings.json
     private const string ConnectionString =
-        "Server=(localdb)\\mssqllocaldb;Database=AuthPermissions;Trusted_Connection=True;MultipleActiveResultSets=true";
+        "Server=(localdb)\\mssqllocaldb;Database=ExploringCosmosDB-Sql;Trusted_Connection=True;MultipleActiveResultSets=true";
 
     /// <summary>Creates a new instance of a derived context.</summary>
     /// <param name="args">Arguments provided by the design-time service.</param>
@@ -44,7 +44,7 @@ public class BooksSqlDesignTimeContextFactory : IDesignTimeDbContextFactory<Book
  *
  * a) Make sure the default project is BookApp
  * b) Use the PMC command
- *    Add-Migration NameForMigration -Context BookSqlDbContext -OutputDir BookApp\Models\Migrations
+ *    Add-Migration NameForMigration -Context BookSqlDbContext -OutputDir Migrations
  * c) Use PMC command
  *    Update-database (or migrate on startup if you add the IDesignTimeDbContextFactory service )
  *

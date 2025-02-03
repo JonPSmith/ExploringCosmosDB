@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SqlDataLayer.SqlBookEfCore;
 
 #nullable disable
 
-namespace BooksApp.Models
+namespace BooksApp.Migrations
 {
     [DbContext(typeof(BookSqlDbContext))]
-    partial class BookSqlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250202154355_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,11 +42,8 @@ namespace BooksApp.Models
 
             modelBuilder.Entity("SqlDataLayer.Classes.Author", b =>
                 {
-                    b.Property<int>("AuthorId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AuthorId"));
+                    b.Property<byte>("AuthorId")
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -64,7 +64,8 @@ namespace BooksApp.Models
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookId"));
 
                     b.Property<decimal>("ActualPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 2)
+                        .HasColumnType("decimal(9,2)");
 
                     b.Property<int?>("DetailsBookDetailsId")
                         .HasColumnType("int");
@@ -77,7 +78,8 @@ namespace BooksApp.Models
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("OrgPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(9, 2)
+                        .HasColumnType("decimal(9,2)");
 
                     b.Property<string>("PromotionalText")
                         .HasMaxLength(200)
@@ -112,12 +114,15 @@ namespace BooksApp.Models
                     b.Property<int>("AuthorId")
                         .HasColumnType("int");
 
+                    b.Property<byte?>("AuthorId1")
+                        .HasColumnType("tinyint");
+
                     b.Property<byte>("Order")
                         .HasColumnType("tinyint");
 
                     b.HasKey("BookId", "AuthorId");
 
-                    b.HasIndex("AuthorId");
+                    b.HasIndex("AuthorId1");
 
                     b.ToTable("BookAuthor");
                 });
@@ -243,9 +248,7 @@ namespace BooksApp.Models
                 {
                     b.HasOne("SqlDataLayer.Classes.Author", "Author")
                         .WithMany("BooksLink")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AuthorId1");
 
                     b.HasOne("SqlDataLayer.Classes.Book", "Book")
                         .WithMany("AuthorsLink")
