@@ -1,5 +1,8 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using NetCore.AutoRegisterDi;
 using SqlDataLayer.SqlBookEfCore;
+using SqlServiceLayer.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,12 +10,19 @@ var connectionString = builder.Configuration.GetConnectionString("SqlBooksConnec
 builder.Services.AddDbContext<BookSqlDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-
-
-
-
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//Register my services
+var assembliesToScan = new[]
+{
+    Assembly.GetExecutingAssembly(),
+    Assembly.GetAssembly(typeof(ListBooksService))
+};
+var services = builder.Services
+    .RegisterAssemblyPublicNonGenericClasses(assembliesToScan)
+    .Where(c => c.Name.EndsWith("Service"))  //optional
+    .AsPublicImplementedInterfaces();
 
 var app = builder.Build();
 

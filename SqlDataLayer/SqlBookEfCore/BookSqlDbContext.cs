@@ -16,13 +16,12 @@ public class BookSqlDbContext : DbContext
     public DbSet<Book> Books { get; set; }                        
     public DbSet<BookDetails> Details { get; set; }
     public DbSet<Author> Authors { get; set; }
-    public DbSet<BookAuthor> BookAuthor { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<PriceOffer> PriceOffers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        //Thanks to David Browne see https://stackoverflow.com/questions/67589195/many-to-many-relationship-with-the-join-table-that-has-extra-data
+        //Other way showm https://stackoverflow.com/questions/67589195/many-to-many-relationship-with-the-join-table-that-has-extra-data
         modelBuilder.Entity<BookAuthor>()
             .HasKey(x => new { x.BookId, x.AuthorId });
 

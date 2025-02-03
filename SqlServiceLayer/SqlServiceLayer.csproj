@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CommonServiceLayer\CommonServiceLayer.csproj" />
+    <ProjectReference Include="..\SqlDataLayer\SqlDataLayer.csproj" />
   </ItemGroup>
 
 </Project>

@@ -15,7 +15,8 @@ namespace BooksApp.Migrations
                 name: "Authors",
                 columns: table => new
                 {
-                    AuthorId = table.Column<byte>(type: "tinyint", nullable: false),
+                    AuthorId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
@@ -78,22 +79,46 @@ namespace BooksApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AuthorBook",
+                columns: table => new
+                {
+                    AuthorsAuthorId = table.Column<int>(type: "int", nullable: false),
+                    BooksBookId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuthorBook", x => new { x.AuthorsAuthorId, x.BooksBookId });
+                    table.ForeignKey(
+                        name: "FK_AuthorBook_Authors_AuthorsAuthorId",
+                        column: x => x.AuthorsAuthorId,
+                        principalTable: "Authors",
+                        principalColumn: "AuthorId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AuthorBook_Books_BooksBookId",
+                        column: x => x.BooksBookId,
+                        principalTable: "Books",
+                        principalColumn: "BookId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BookAuthor",
                 columns: table => new
                 {
                     BookId = table.Column<int>(type: "int", nullable: false),
                     AuthorId = table.Column<int>(type: "int", nullable: false),
-                    Order = table.Column<byte>(type: "tinyint", nullable: false),
-                    AuthorId1 = table.Column<byte>(type: "tinyint", nullable: true)
+                    Order = table.Column<byte>(type: "tinyint", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BookAuthor", x => new { x.BookId, x.AuthorId });
                     table.ForeignKey(
-                        name: "FK_BookAuthor_Authors_AuthorId1",
-                        column: x => x.AuthorId1,
+                        name: "FK_BookAuthor_Authors_AuthorId",
+                        column: x => x.AuthorId,
                         principalTable: "Authors",
-                        principalColumn: "AuthorId");
+                        principalColumn: "AuthorId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_BookAuthor_Books_BookId",
                         column: x => x.BookId,
@@ -169,9 +194,14 @@ namespace BooksApp.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookAuthor_AuthorId1",
+                name: "IX_AuthorBook_BooksBookId",
+                table: "AuthorBook",
+                column: "BooksBookId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookAuthor_AuthorId",
                 table: "BookAuthor",
-                column: "AuthorId1");
+                column: "AuthorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Books_ActualPrice",
@@ -208,6 +238,9 @@ namespace BooksApp.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AuthorBook");
+
             migrationBuilder.DropTable(
                 name: "BookAuthor");
 

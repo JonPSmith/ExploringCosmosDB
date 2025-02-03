@@ -1,13 +1,8 @@
 ﻿// Copyright (c) 2025 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
-using Microsoft.VisualStudio.TestPlatform.Utilities;
-using SqlDataLayer.Classes;
-using SqlDataLayer;
 using Xunit.Abstractions;
-using Xunit.Extensions.AssertExtensions;
 using GenerateBooks;
-using Microsoft.EntityFrameworkCore;
 using SqlDataLayer.SqlBookEfCore;
 using TestSupport.EfHelpers;
 

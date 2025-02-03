@@ -7,7 +7,7 @@ namespace SqlDataLayer.Classes
 {
     public class Author
     {
-        public byte AuthorId { get; set; }
+        public int AuthorId { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         [MaxLength(100)]

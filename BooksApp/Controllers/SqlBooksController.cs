@@ -1,12 +1,8 @@
-using BooksApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using SqlServiceLayer;
-using System.Diagnostics;
 using CommonServiceLayer;
-using Microsoft.EntityFrameworkCore;
-using SqlDataLayer;
 using SqlDataLayer.SqlBookEfCore;
-using SqlDataLayer.Classes;
+using Microsoft.EntityFrameworkCore;
 
 namespace BooksApp.Controllers
 {
@@ -21,21 +17,12 @@ namespace BooksApp.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(SortFilterPageOptions options, [FromServices] IListBooksService service)
         {
-            
-            //!!!
-            _context.Database.EnsureDeleted();
-            _context.Database.EnsureCreated();
+            var bookList = await (await service.SortFilterPageAsync(options))
+                .ToListAsync();
 
-            _context.Add(CreateSqlBooks.CreateBook(
-                "Book title", new DateOnly(2025, 1, 13),
-                "Manning", 123, null,
-                new List<string> { "author1", "author2" },
-                new List<Tag> { new Tag { TagId = "My Tag" } }));
-            _context.SaveChanges();
-
-            return View(new BookListCombinedDto(new SortFilterPageOptions(), null));
+            return View(new BookListCombinedDto(options, bookList));
         }
     }
 }

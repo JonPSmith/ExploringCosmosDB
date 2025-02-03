@@ -22,6 +22,21 @@ namespace BooksApp.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("AuthorBook", b =>
+                {
+                    b.Property<int>("AuthorsAuthorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BooksBookId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AuthorsAuthorId", "BooksBookId");
+
+                    b.HasIndex("BooksBookId");
+
+                    b.ToTable("AuthorBook");
+                });
+
             modelBuilder.Entity("BookTag", b =>
                 {
                     b.Property<int>("BooksBookId")
@@ -39,8 +54,11 @@ namespace BooksApp.Migrations
 
             modelBuilder.Entity("SqlDataLayer.Classes.Author", b =>
                 {
-                    b.Property<byte>("AuthorId")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("AuthorId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AuthorId"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -111,15 +129,12 @@ namespace BooksApp.Migrations
                     b.Property<int>("AuthorId")
                         .HasColumnType("int");
 
-                    b.Property<byte?>("AuthorId1")
-                        .HasColumnType("tinyint");
-
                     b.Property<byte>("Order")
                         .HasColumnType("tinyint");
 
                     b.HasKey("BookId", "AuthorId");
 
-                    b.HasIndex("AuthorId1");
+                    b.HasIndex("AuthorId");
 
                     b.ToTable("BookAuthor");
                 });
@@ -217,6 +232,21 @@ namespace BooksApp.Migrations
                     b.ToTable("Tags");
                 });
 
+            modelBuilder.Entity("AuthorBook", b =>
+                {
+                    b.HasOne("SqlDataLayer.Classes.Author", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorsAuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SqlDataLayer.Classes.Book", null)
+                        .WithMany()
+                        .HasForeignKey("BooksBookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("BookTag", b =>
                 {
                     b.HasOne("SqlDataLayer.Classes.Book", null)
@@ -244,11 +274,13 @@ namespace BooksApp.Migrations
             modelBuilder.Entity("SqlDataLayer.Classes.BookAuthor", b =>
                 {
                     b.HasOne("SqlDataLayer.Classes.Author", "Author")
-                        .WithMany("BooksLink")
-                        .HasForeignKey("AuthorId1");
+                        .WithMany("BookAuthors")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SqlDataLayer.Classes.Book", "Book")
-                        .WithMany("AuthorsLink")
+                        .WithMany("BookAuthors")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -278,12 +310,12 @@ namespace BooksApp.Migrations
 
             modelBuilder.Entity("SqlDataLayer.Classes.Author", b =>
                 {
-                    b.Navigation("BooksLink");
+                    b.Navigation("BookAuthors");
                 });
 
             modelBuilder.Entity("SqlDataLayer.Classes.Book", b =>
                 {
-                    b.Navigation("AuthorsLink");
+                    b.Navigation("BookAuthors");
 
                     b.Navigation("Promotion");
 
