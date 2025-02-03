@@ -15,15 +15,14 @@ public static class CreateBooksFromManningData
     private const string ImageUrlPrefix = "https://images.manning.com/360/480/resize/";
     public const string PublisherString = "Manning publications";
 
-
     /// <summary>
     /// This creates Books from the real-world data from Manning publications. To handle
     /// SQL books, where you can't have duplicable Author or Tag entity.
     /// Note: These generated books don't have any Reviews or PriceOffer entities. 
     /// </summary>
-    /// <param name="numBooks"></param>
+    /// <param name="numBooks">Optional: number books to take, if not set you get all books</param>
     /// <returns>Sql Books</returns>
-    public static IEnumerable<Book> CreateSqlManningBooks(int numBooks)
+    public static IEnumerable<Book> CreateSqlManningBooks(int numBooks = 1000)
     {
         //We take all the 
         var summaryFilePath = TestData.GetFilePath("ManningBooks-20200814.json");

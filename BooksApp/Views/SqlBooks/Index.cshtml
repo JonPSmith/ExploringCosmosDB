@@ -1,6 +1,6 @@
-﻿@using CommonServiceLayer
+﻿@using BookApp.UI.HelperExtensions
+@using CommonServiceLayer
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@using SqlServiceLayer
 @model SqlServiceLayer.BookListCombinedDto
 @{
     ViewData["Title"] = "SQL server version";
@@ -61,7 +61,68 @@
 </form>
 <br />
 
-@*<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>*@
+<table class="table">
+    @foreach (var item in Model.BooksList)
+    {
+        <tr>
+            <td>
+                <p>
+                    <span class="h2"/>@item.Title
+                </p>
+                <div>
+                    <small>by</small>&nbsp;@Html.DisplayFor(m => item.AuthorsOrdered)
+                </div>
+                <div>
+                    Published on @item.PublishedOn.ToString("d")
+                </div>
+                <div>
+                    Tags: @string.Join(" | ", item.TagStrings)
+                </div>
+                <div>
+                    @(item.ReviewsCount == 0 ? "Be the first to review this book" : $"Votes: {item.ReviewsAverageVotes:F1} by {item.ReviewsCount} customers")
+                </div>
+                <div>
+                    <span class="h4">@(item.ActualPrice < 0 ? "- not for sale - " : $"Price: ${item.ActualPrice:F}")</span>
+                    @if (item.PromotionText != null)
+                    {
+                        <span class="text-danger">
+                            <strong>&nbsp;<del>$@($"{item.OrgPrice:F}")</del>&nbsp;<i>@(item.PromotionText)</i></strong>
+                        </span>
+                    }
+                </div>
+            </td>
+            <td class="vert-align">
+                @if (Context.Request.IsLocal())
+                {
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-light dropdown-toggle" id="dropdownMenu2" data-toggle="dropdown">
+                            Admin
+                        </button>
+                        @*<div class="dropdown-menu">
+                            @if (item.PromotionText == null)
+                            {
+                                <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="AddPromotion" asp-route-id="@item.BookId">Add Promotion</a>
+                            }
+                            else
+                            {
+                                <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="RemovePromotion" asp-route-id="@item.BookId">Remove Promotion</a>
+                            }
+                            <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="AddBookReview" asp-route-id="@item.BookId">Add Review</a>
+                        </div>*@
+                    </div>
+                }
+            </td>
+        </tr>
+    }
+</table>
+
+@section Scripts {
+
+    <script type='text/javascript'>
+        document.addEventListener("DOMContentLoaded",
+            function(event) {
+                BookList.initialise('@Model.SortFilterPageData.FilterBy', '@Model.SortFilterPageData.FilterValue',
+                    '@Url.Action("GetFilterSearchContent")');
+            });
+    </script>
+}
