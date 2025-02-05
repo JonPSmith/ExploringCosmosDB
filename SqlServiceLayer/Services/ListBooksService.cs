@@ -31,7 +31,7 @@ namespace SqlServiceLayer.Services
 
             await options.SetupRestOfDtoAsync(booksQuery); 
 
-            return booksQuery.PageBooks(options.PageNum - 1, options.PageSize); 
+            return booksQuery.Page(options.PageNum - 1, options.PageSize); 
         }
     }
 

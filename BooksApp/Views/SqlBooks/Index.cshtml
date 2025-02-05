@@ -6,7 +6,6 @@
     ViewData["Title"] = "SQL server version";
 }
 
-
 <p><span class="text-primary h2">SQL server version</span></p>
 
 <form id="sort-filter-form" role="form">
@@ -67,7 +66,7 @@
         <tr>
             <td>
                 <p>
-                    <span class="h2"/>@item.Title
+                    <span class="h3"><a asp-controller="SqlBooks" asp-action="Detail" asp-route-id="@item.BookId">@item.Title</a></span><span>&nbsp;click to see more...</span>
                 </p>
                 <div>
                     <small>by</small>&nbsp;@Html.DisplayFor(m => item.AuthorsOrdered)

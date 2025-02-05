@@ -4,6 +4,7 @@ using CommonServiceLayer;
 using SqlDataLayer.SqlBookEfCore;
 using Microsoft.EntityFrameworkCore;
 using SqlServiceLayer.Dtos;
+using SqlServiceLayer.QueryObjects;
 
 namespace BooksApp.Controllers;
 
@@ -24,6 +25,11 @@ public class SqlBooksController : Controller
             .ToListAsync();
 
         return View(new BookListCombinedDto(options, bookList));
+    }
+
+    public async Task<IActionResult> Detail(int id)
+    {
+        return View(await DetailBook.GetBookDetailAsync(_context, id));
     }
 
     /// <summary>

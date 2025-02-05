@@ -1,21 +1,22 @@
 ﻿// Copyright (c) 2020 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
-namespace CommonServiceLayer;
-
-public static class GenericPaging
+namespace CommonServiceLayer
 {
-    public static IQueryable<T> PageBooks<T>(this IQueryable<T> query,
-        int pageNumZeroStart, int pageSize)
+    public static class GenericPaging
     {
-        if (pageSize == 0)
-            throw new ArgumentOutOfRangeException
-                (nameof(pageSize), "pageSize cannot be zero.");
+        public static IQueryable<T> Page<T>(this IQueryable<T> query,
+            int pageNumZeroStart, int pageSize)
+        {
+            if (pageSize == 0)
+                throw new ArgumentOutOfRangeException
+                    (nameof(pageSize), "pageSize cannot be zero.");
 
-        if (pageNumZeroStart != 0)
-            query = query.Skip(pageNumZeroStart * pageSize);
+            if (pageNumZeroStart != 0)
+                query = query.Skip(pageNumZeroStart * pageSize);
 
-        return query.Take(pageSize); 
+            return query.Take(pageSize); 
+        }
+
     }
-
 }
