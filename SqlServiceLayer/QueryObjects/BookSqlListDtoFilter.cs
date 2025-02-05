@@ -3,17 +3,16 @@
 
 using CommonServiceLayer;
 using SqlServiceLayer.Dtos;
-using System;
 
 namespace SqlServiceLayer.QueryObjects
 {
 
-    public static class BookListDtoFilter
+    public static class BookSqlListDtoFilter
     {
         public const string AllBooksNotPublishedString = "Coming Soon";
 
-        public static IQueryable<BookListDto> FilterBooksBy(
-            this IQueryable<BookListDto> books,
+        public static IQueryable<BookSqlListDto> FilterBooksBy(
+            this IQueryable<BookSqlListDto> books,
             BooksFilterBy filterBy, string filterValue) 
         {
             if (string.IsNullOrEmpty(filterValue)) 

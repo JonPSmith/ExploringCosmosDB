@@ -19,23 +19,24 @@ public class SqlBooksController : Controller
         _logger = logger;
     }
 
-    public async Task<IActionResult> Index(SortFilterPageOptions options, [FromServices] IListBooksService service)
+    public async Task<IActionResult> Index(SortFilterPageOptions options, [FromServices] IListBooksSqlService sqlService)
     {
-        var bookList = await (await service.SortFilterPageAsync(options))
+        var bookList = await (await sqlService.SortFilterPageAsync(options))
             .ToListAsync();
 
-        return View(new BookListCombinedDto(options, bookList));
+        return View(new BookSqlListCombinedDto(options, bookList));
     }
 
     public async Task<IActionResult> Detail(int id)
     {
-        return View(await DetailBook.GetBookDetailAsync(_context, id));
+        return View(await BookSqlDetail.GetBookDetailAsync(_context, id));
     }
 
     /// <summary>
     /// This provides the filter search dropdown content
     /// </summary>
     /// <param name="options"></param>
+    /// <param name="service"></param>
     /// <returns></returns>
     [HttpGet]
     public JsonResult GetFilterSearchContent(SortFilterPageOptions options, [FromServices] IBookSqlFilterDropdownService service)

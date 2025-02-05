@@ -10,16 +10,16 @@ using SqlServiceLayer.QueryObjects;
 
 namespace SqlServiceLayer.Services
 {
-    public class ListBooksService : IListBooksService
+    public class ListBooksSqlService : IListBooksSqlService
     {
         private readonly BookSqlDbContext _context;
 
-        public ListBooksService(BookSqlDbContext context)
+        public ListBooksSqlService(BookSqlDbContext context)
         {
             _context = context;
         }
 
-        public async Task<IQueryable<BookListDto>> SortFilterPageAsync
+        public async Task<IQueryable<BookSqlListDto>> SortFilterPageAsync
             (SortFilterPageOptions options)
         {
             var booksQuery = _context.Books 

@@ -6,12 +6,12 @@ using SqlServiceLayer.Dtos;
 
 namespace SqlServiceLayer.QueryObjects
 {
-    public static class BookListDtoSelect
+    public static class BookSqlListDtoSelect
     {
-        public static IQueryable<BookListDto> 
+        public static IQueryable<BookSqlListDto> 
             MapBookToDto(this IQueryable<Book> books) 
         {
-            return books.Select(p      => new BookListDto //#A
+            return books.Select(p      => new BookSqlListDto //#A
             {
                 BookId                 = p.BookId,           //#A
                 Title                  = p.Title,            //#A

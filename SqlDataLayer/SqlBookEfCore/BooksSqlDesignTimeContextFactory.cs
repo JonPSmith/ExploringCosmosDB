@@ -27,7 +27,6 @@ public class BooksSqlDesignTimeContextFactory : IDesignTimeDbContextFactory<Book
 /******************************************************************************
  * NOTES ON MIGRATION:
  *
- * BookApp.UI has two application DbContexts, BookDbContext and OrderDbContest
  * Each has its own project, migrations and migration history table
  * You need to build a migration from the DbContext's project (see below)
  *

@@ -8,10 +8,10 @@ using SqlServiceLayer.QueryObjects;
 
 namespace SqlServiceLayer;
 
-public static class DetailBook
+public static class BookSqlDetail
 {
-    public static Task<BookDetailDto> GetBookDetailAsync(BookSqlDbContext context, int bookId) =>
-        context.Books.Select(p => new BookDetailDto
+    public static Task<BookSqlDetailDto> GetBookDetailAsync(BookSqlDbContext context, int bookId) =>
+        context.Books.Select(p => new BookSqlDetailDto
         {
             BookId = p.BookId,
             Title = p.Title,

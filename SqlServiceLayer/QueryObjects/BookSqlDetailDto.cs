@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Html;
 
 namespace SqlServiceLayer.QueryObjects
 {
-    public class BookDetailDto
+    public class BookSqlDetailDto
     {
         public int BookId { get; set; }
         public string Title { get; set; }

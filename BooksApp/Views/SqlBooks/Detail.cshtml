@@ -1,4 +1,4 @@
-﻿@model SqlServiceLayer.QueryObjects.BookDetailDto
+﻿@model SqlServiceLayer.QueryObjects.BookSqlDetailDto
 
 @{
     ViewData["Title"] = "Detail";
@@ -8,9 +8,6 @@
     <tbody>
     <tr>
         <td>
-            <div>
-                <a class="btn btn-info btn-sm" href="@Model.ManningBookUrl" role="button">See real book in Manning</a>
-            </div>
             <br />
             <a href="@Model.ManningBookUrl"><img src="@Model.ImageUrl" /></a>
             <br />

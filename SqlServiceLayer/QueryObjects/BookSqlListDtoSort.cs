@@ -7,10 +7,10 @@ using SqlServiceLayer.Dtos;
 namespace SqlServiceLayer.QueryObjects
 {
 
-    public static class BookListDtoSort
+    public static class BookSqlListDtoSort
     {
-        public static IQueryable<BookListDto> OrderBooksBy
-            (this IQueryable<BookListDto> books, OrderByOptions orderByOptions)
+        public static IQueryable<BookSqlListDto> OrderBooksBy
+            (this IQueryable<BookSqlListDto> books, OrderByOptions orderByOptions)
         {
             switch (orderByOptions)
             {

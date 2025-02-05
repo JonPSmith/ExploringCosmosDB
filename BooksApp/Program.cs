@@ -17,7 +17,7 @@ builder.Services.AddControllersWithViews();
 var assembliesToScan = new[]
 {
     Assembly.GetExecutingAssembly(),
-    Assembly.GetAssembly(typeof(ListBooksService))
+    Assembly.GetAssembly(typeof(ListBooksSqlService))
 };
 var services = builder.Services
     .RegisterAssemblyPublicNonGenericClasses(assembliesToScan)

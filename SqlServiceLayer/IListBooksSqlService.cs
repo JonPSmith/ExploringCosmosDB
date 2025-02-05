@@ -7,8 +7,8 @@ using SqlServiceLayer.Dtos;
 
 namespace SqlServiceLayer
 {
-    public interface IListBooksService
+    public interface IListBooksSqlService
     {
-        Task<IQueryable<BookListDto>> SortFilterPageAsync(SortFilterPageOptions options);
+        Task<IQueryable<BookSqlListDto>> SortFilterPageAsync(SortFilterPageOptions options);
     }
 }

@@ -3,7 +3,7 @@
 
 namespace SqlServiceLayer.Dtos;
 
-public class BookListDto
+public class BookSqlListDto
 {
     public int BookId { get; set; }
     public string Title { get; set; }
