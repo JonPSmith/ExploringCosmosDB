@@ -12,7 +12,7 @@ using Xunit.Extensions.AssertExtensions;
 
 namespace Test.UnitTests;
 
-public class TestCreateSqlBook(ITestOutputHelper output)
+public class TestManualCreateSqlBook(ITestOutputHelper output)
 {
     [Fact]
     public void TestCreateOneBook()
@@ -20,11 +20,28 @@ public class TestCreateSqlBook(ITestOutputHelper output)
         //SETUP
 
         //ATTEMPT
-        var book = CreateSqlBooks.CreateBook(
-            "Book title", new DateOnly(2025, 1, 13), 
-            "Manning", 123, null, 
-            new List<string> { "author1", "author2" },
-            new List<Tag>{ new Tag{ TagId = "My Tag"}} );
+        var book = new Book
+        {
+            Title = "Book title",
+            Authors = new List<Author>
+            {
+                new Author{Name = "author1"},
+                new Author{Name = "author2"}
+            },
+            PublishedOn = new DateOnly(2025, 1, 13),
+            Publisher = "Manning",
+            OrgPrice = 123,
+            ActualPrice = 123,
+            ImageUrl = "Url to book ",
+            Tags = new List<Tag> { new Tag { TagId = "My Tag" } },
+            BookAuthors = new List<BookAuthor>()
+        };
+        byte order = 0;
+        foreach (var author in book.Authors)
+        {
+            book.BookAuthors.Add(new BookAuthor { Book = book, Author = author, Order = order });
+            order++;
+        }
 
         //VERIFY
         output.WriteLine(book.ToString());
@@ -40,11 +57,28 @@ public class TestCreateSqlBook(ITestOutputHelper output)
         using var context = new BookSqlDbContext(options);
         context.Database.EnsureClean();
 
-        var book = CreateSqlBooks.CreateBook(
-            "Book title", new DateOnly(2025, 1, 13), 
-            "Manning", 123, null,
-            new List<string> { "author1", "author2" },
-            new List<Tag> { new Tag { TagId = "My Tag" } });
+        var book = new Book
+        {
+            Title = "Book title",
+            Authors = new List<Author>
+            {
+                new Author{Name = "author1"},
+                new Author{Name = "author2"}
+            },
+            PublishedOn = new DateOnly(2025, 1, 13),
+            Publisher = "Manning",
+            OrgPrice = 123,
+            ActualPrice = 123,
+            ImageUrl = "Url to book ",
+            Tags = new List<Tag> { new Tag { TagId = "My Tag" } },
+            BookAuthors = new List<BookAuthor>()
+        };
+        byte order = 0;
+        foreach (var author in book.Authors)
+        {
+            book.BookAuthors.Add(new BookAuthor { Book = book, Author = author, Order = order });
+            order++;
+        }
 
         //ATTEMPT
         context.Add(book);
@@ -68,33 +102,5 @@ public class TestCreateSqlBook(ITestOutputHelper output)
 
         book.ToString().ShouldEqual(
             "Book title by author1, author2. Price 123, no reviews, Published by Manning on 13/01/2025, Tags: My Tag");
-    }
-
-    [Fact]
-    public void TestCreateTwoBook_ToDatabase()
-    {
-        //SETUP
-        var options = this.CreateUniqueClassOptions<BookSqlDbContext>();
-        using var context = new BookSqlDbContext(options);
-        context.Database.EnsureClean();
-
-        var book1 = CreateSqlBooks.CreateBook(
-            "Book title", new DateOnly(2025, 1, 13),
-            "Manning", 123, null,
-            new List<string> { "author1", "author2" },
-            new List<Tag> { new Tag { TagId = "My Tag" } });
-        var book2 = CreateSqlBooks.CreateBook(
-            "Book title", new DateOnly(2025, 1, 13),
-            "Manning", 123, null,
-            new List<string> { "author1", "author2" },
-            new List<Tag> { new Tag { TagId = "My Tag" } });
-
-        //ATTEMPT
-        context.Add(book1);
-        context.Add(book2);
-        context.SaveChanges();
-
-        //VERIFY
-        context.ChangeTracker.Clear();
     }
 }

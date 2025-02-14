@@ -5,12 +5,11 @@ using Newtonsoft.Json;
 using SqlDataLayer.Classes;
 using Microsoft.IdentityModel.Tokens;
 using TestSupport.Helpers;
-using SqlDataLayer;
 using System.Text.RegularExpressions;
 
 namespace GenerateBooks;
 
-public static class CreateBooksFromManningData
+public static class CreateSqlBooksFromManningData
 {
     private const string ImageUrlPrefix = "https://images.manning.com/360/480/resize/";
     public const string PublisherString = "Manning publications";
@@ -49,8 +48,25 @@ public static class CreateBooksFromManningData
             var tags = (jsonBook.tags ?? [])
                 .Select(x => tagsDict[x]).ToList();
 
-            var book = CreateSqlBooks.CreateBook(jsonBook.title, publishedOn, PublisherString,
-                price, fullImageUrl, authors, tags);
+            //ATTEMPT
+            var book = new Book
+            {
+                Title = jsonBook.title,
+                Authors = new List<Author>(authors.Select(x => new Author { Name = x })),
+                PublishedOn = publishedOn,
+                Publisher = PublisherString,
+                OrgPrice = price,
+                ActualPrice = price,
+                ImageUrl = fullImageUrl,
+                Tags = new HashSet<Tag>(tags),
+                BookAuthors = new List<BookAuthor>()
+            };
+            byte order = 0;
+            foreach (var author in book.Authors)
+            {
+                book.BookAuthors.Add(new BookAuthor { Book = book, Author = author, Order = order });
+                order++;
+            }
 
             if (detailDict.ContainsKey(jsonBook.id))
             {
@@ -63,13 +79,13 @@ public static class CreateBooksFromManningData
                     WhatsInside = detailDict[jsonBook.id].whatsInside,
                 };
             }
-            else
-            {
-                book.Details = new BookDetails
-                {
-                    Description = BookDetails.NoDetailsAvailable
-                };
-            }
+            // else
+            // {
+            //     book.Details = new BookDetails
+            //     {
+            //         Description = BookDetails.NoDetailsAvailable
+            //     };
+            // }
 
             yield return book;
         }

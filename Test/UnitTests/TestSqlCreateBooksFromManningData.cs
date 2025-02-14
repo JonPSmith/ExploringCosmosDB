@@ -10,17 +10,17 @@ using TestSupport.EfHelpers;
 
 namespace Test.UnitTests;
 
-public class TestCreateBooksFromManningData(ITestOutputHelper output)
+public class TestSqlCreateBooksFromManningData(ITestOutputHelper output)
 {
     private readonly ITestOutputHelper _output = output;
 
     [Fact]
-    public void TestCreateManningBooks()
+    public void TestCreateSqlManningBooks()
     {
         //SETUP
 
         //ATTEMPT
-        var manningBooks = CreateBooksFromManningData.CreateSqlManningBooks(10).ToArray();
+        var manningBooks = CreateSqlBooksFromManningData.CreateSqlManningBooks(10).ToArray();
 
         //VERIFY
         _output.WriteLine($"Num Manning books created = {manningBooks.Count() }" + Environment.NewLine);
@@ -32,14 +32,14 @@ public class TestCreateBooksFromManningData(ITestOutputHelper output)
     }
 
     [Fact]
-    public void TestCreateManningBooks_ToDatabase()
+    public void TestCreateSqlManningBooks_ToDatabase()
     {
         //SETUP
         var options = this.CreateUniqueClassOptions<BookSqlDbContext>();
         using var context = new BookSqlDbContext(options);
         context.Database.EnsureClean();
 
-        var manningBooks = CreateBooksFromManningData.CreateSqlManningBooks(100).ToArray();
+        var manningBooks = CreateSqlBooksFromManningData.CreateSqlManningBooks(100).ToArray();
 
         //ATTEMPT
         context.AddRange(manningBooks);
@@ -52,23 +52,4 @@ public class TestCreateBooksFromManningData(ITestOutputHelper output)
         _output.WriteLine($"Num Tags: {context.Tags.Count()}");
     }
 
-    //!!! did this to get data on the BookApp 
-    [RunnableInDebugOnly]
-    public void FillSqkManningBooksToBookApp()
-    {
-        //SETUP
-        var connectionString = "Server=(localdb)\\mssqllocaldb;Database=ExploringCosmosDB-Sql;" +
-                               "Trusted_Connection=True;MultipleActiveResultSets=true";
-        var builder = new DbContextOptionsBuilder<BookSqlDbContext>();
-        builder.UseSqlServer(connectionString);
-        var context = new BookSqlDbContext(builder.Options);
-
-        var manningBooks = CreateBooksFromManningData.CreateSqlManningBooks();
-
-        //ATTEMPT
-        context.AddRange(manningBooks);
-        context.SaveChanges();
-
-        //VERIFY
-    }
 }
