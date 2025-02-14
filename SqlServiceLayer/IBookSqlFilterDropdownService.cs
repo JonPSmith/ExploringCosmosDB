@@ -11,8 +11,8 @@ namespace SqlServiceLayer
         /// <summary>
         ///     This makes the various Value + text to go in the dropdown based on the FilterBy option
         /// </summary>
-        /// <param name="filterBy"></param>
+        /// <param name="filterByOptions"></param>
         /// <returns></returns>
-        IEnumerable<DropdownTuple> GetSqlFilterDropDownValues(BooksFilterBy filterBy);
+        IEnumerable<DropdownTuple> GetSqlFilterDropDownValues(FilterByOptions filterByOptions);
     }
 }

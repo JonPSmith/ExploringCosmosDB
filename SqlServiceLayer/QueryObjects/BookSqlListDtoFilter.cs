@@ -13,22 +13,22 @@ namespace SqlServiceLayer.QueryObjects
 
         public static IQueryable<BookSqlListDto> FilterBooksBy(
             this IQueryable<BookSqlListDto> books,
-            BooksFilterBy filterBy, string filterValue) 
+            FilterByOptions filterByOptions, string filterValue) 
         {
             if (string.IsNullOrEmpty(filterValue)) 
                 return books; 
 
-            switch (filterBy)
+            switch (filterByOptions)
             {
-                case BooksFilterBy.NoFilter: 
+                case FilterByOptions.NoFilter: 
                     return books; 
-                case BooksFilterBy.ByVotes:
+                case FilterByOptions.ByVotes:
                     var filterVote = int.Parse(filterValue); 
                     return books.Where(x => 
                         x.ReviewsAverageVotes > filterVote);
-                case BooksFilterBy.ByTags:
+                case FilterByOptions.ByTags:
                     return books.Where(x => x.TagStrings.Any(y => y == filterValue));
-                case BooksFilterBy.ByPublicationYear:
+                case FilterByOptions.ByPublicationYear:
                     if (filterValue == AllBooksNotPublishedString) 
                         return books.Where( 
                             x => x.PublishedOn > DateOnly.FromDateTime(DateTime.UtcNow) ); 
@@ -39,7 +39,7 @@ namespace SqlServiceLayer.QueryObjects
                              && x.PublishedOn <= DateOnly.FromDateTime(DateTime.UtcNow)); 
                 default:
                     throw new ArgumentOutOfRangeException
-                        (nameof(filterBy), filterBy, null);
+                        (nameof(filterByOptions), filterByOptions, null);
             }
         }
     }

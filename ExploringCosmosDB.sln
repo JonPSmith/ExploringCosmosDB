@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlDataLayer", "SqlDataLaye
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateBooks", "GenerateBooks\GenerateBooks.csproj", "{28EC2FC6-FE03-4B57-96A3-B47201A61922}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksApp", "BooksApp\BooksApp.csproj", "{89DEA2B6-53AA-4320-9C25-CB470E0024C5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlServiceLayer", "SqlServiceLayer\SqlServiceLayer.csproj", "{7B9DEBA0-C624-4DAD-8862-B39E2680AED4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonServiceLayer", "CommonServiceLayer\CommonServiceLayer.csproj", "{0ECCC446-DAC1-49A7-ADCC-16EF81382D10}"
@@ -39,10 +37,6 @@ Global
 		{28EC2FC6-FE03-4B57-96A3-B47201A61922}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28EC2FC6-FE03-4B57-96A3-B47201A61922}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28EC2FC6-FE03-4B57-96A3-B47201A61922}.Release|Any CPU.Build.0 = Release|Any CPU
-		{89DEA2B6-53AA-4320-9C25-CB470E0024C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{89DEA2B6-53AA-4320-9C25-CB470E0024C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{89DEA2B6-53AA-4320-9C25-CB470E0024C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{89DEA2B6-53AA-4320-9C25-CB470E0024C5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7B9DEBA0-C624-4DAD-8862-B39E2680AED4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7B9DEBA0-C624-4DAD-8862-B39E2680AED4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B9DEBA0-C624-4DAD-8862-B39E2680AED4}.Release|Any CPU.ActiveCfg = Release|Any CPU

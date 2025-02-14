@@ -32,6 +32,14 @@ namespace SqlDataLayer.Classes
         /// </summary>
         public string ManningBookUrl { get; set; }
 
+        //---------------------------------------
+        //Used when caching how many review are there, and the average of all the votes
+
+        [ConcurrencyCheck]
+        public int ReviewsCount { get; set; }
+
+        [ConcurrencyCheck]
+        public double ReviewsAverageVotes { get; set; }
 
         //---------------------------------------
         //relationships

@@ -25,11 +25,8 @@ namespace SqlServiceLayer.Services
             var booksQuery = _context.Books 
                 .AsNoTracking() 
                 .MapBookToDto() 
-                .OrderBooksBy(options.OrderByOptions) 
-                .FilterBooksBy(options.FilterBy, 
-                    options.FilterValue); 
-
-            await options.SetupRestOfDtoAsync(booksQuery); 
+                .OrderBooksBy(options.SortByOptions) 
+                .FilterBooksBy(options.FilterByOptions, options.FilterName); 
 
             return booksQuery.Page(options.PageNum - 1, options.PageSize); 
         }

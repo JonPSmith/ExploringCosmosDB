@@ -2,7 +2,7 @@
 
 namespace CommonServiceLayer
 {
-    public enum OrderByOptions
+    public enum SortByOptions
     {
         [Display(Name = "sort by...")] SimpleOrder = 0,
         [Display(Name = "Votes ↑")] ByVotes,
@@ -11,17 +11,12 @@ namespace CommonServiceLayer
         [Display(Name = "Price ↑")] ByPriceHighestFirst
     }
 
-    public enum BooksFilterBy
+    public enum FilterByOptions
     {
         [Display(Name = "All")] NoFilter = 0,
         [Display(Name = "By Votes...")] ByVotes,
         [Display(Name = "By Tags...")] ByTags,
         [Display(Name = "By Year published...")]
         ByPublicationYear
-    }
-
-    public static class DisplayConstants
-    {
-        public const string AllBooksNotPublishedString = "Coming Soon";
     }
 }

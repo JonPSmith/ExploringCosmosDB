@@ -7,33 +7,31 @@ namespace CommonServiceLayer;
 
 public class SortFilterPageOptions
 {
-    public const int DefaultPageSize = 100; //default page
 
-    //-----------------------------------------
-    //Paging parts, which require the use of the method
+    // Sorting
+    public SortByOptions SortByOptions { get; set; }
+    public SortByOptions SortBy { get; set; } = SortByOptions.SimpleOrder;
 
-    /// <summary>
-    ///     This holds the possible page sizes
-    /// </summary>
-    public int[] PageSizes = new[] { 5, 10, 20, 50, 100, 500, 1000 };
+    //Filtering
+    public FilterByOptions FilterByOptions { get; set; }
+    public FilterByOptions FilterBy { get; set; } = FilterByOptions.NoFilter;
+    public string FilterName { get; set; }
+    public Dictionary<Enum, List<DropdownTuple>> FilterItemsDictionary { get; set; }
 
-    public OrderByOptions OrderByOptions { get; set; }
+    //Paging
+    public int PageIndex { get; set; }
+    public int[] PageSizes = [5, 10, 20, 50, 100, 500, 1000];
+    public int PageSize { get; set; } = 100;
 
-    public BooksFilterBy FilterBy { get; set; }
-
-    public string FilterValue { get; set; }
-
+    //Information on the paging
     public int PageNum { get; set; } = 1;
-
-    public int PageSize { get; set; } = DefaultPageSize;
-
-    public bool NoCount { get; } = false;
+    public int NumPages { get; set; }
 
 
-    /// <summary>
-    ///     This is set to the number of pages available based on the number of entries in the query
-    /// </summary>
-    public int NumPages { get; private set; }
+
+
+
+
 
     /// <summary>
     ///     This holds the state of the key parts of the SortFilterPage parts
@@ -70,6 +68,6 @@ public class SortFilterPageOptions
     /// <returns></returns>
     private string GenerateCheckState()
     {
-        return $"{(int)FilterBy},{FilterValue},{PageSize},{NumPages}";
+        return $"{(int)FilterBy},{FilterName},{PageSize},{NumPages}";
     }
 }

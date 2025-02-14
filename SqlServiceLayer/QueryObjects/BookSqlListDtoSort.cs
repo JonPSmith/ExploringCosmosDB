@@ -10,27 +10,27 @@ namespace SqlServiceLayer.QueryObjects
     public static class BookSqlListDtoSort
     {
         public static IQueryable<BookSqlListDto> OrderBooksBy
-            (this IQueryable<BookSqlListDto> books, OrderByOptions orderByOptions)
+            (this IQueryable<BookSqlListDto> books, SortByOptions sortByOptions)
         {
-            switch (orderByOptions)
+            switch (sortByOptions)
             {
-                case OrderByOptions.SimpleOrder: 
+                case SortByOptions.SimpleOrder: 
                     return books.OrderByDescending( 
                         x => x.BookId); 
-                case OrderByOptions.ByVotes: 
+                case SortByOptions.ByVotes: 
                     return books.OrderByDescending(x => 
                         x.ReviewsAverageVotes); 
-                case OrderByOptions.ByPublicationDate: 
+                case SortByOptions.ByPublicationDate: 
                     return books.OrderByDescending( 
                         x => x.PublishedOn); 
-                case OrderByOptions.ByPriceLowestFirst: 
+                case SortByOptions.ByPriceLowestFirst: 
                     return books.OrderBy(x => x.ActualPrice); 
-                case OrderByOptions.ByPriceHighestFirst: 
+                case SortByOptions.ByPriceHighestFirst: 
                     return books.OrderByDescending( 
                         x => x.ActualPrice); 
                 default:
                     throw new ArgumentOutOfRangeException(
-                        nameof(orderByOptions), orderByOptions, null);
+                        nameof(sortByOptions), sortByOptions, null);
             }
         }
     }
