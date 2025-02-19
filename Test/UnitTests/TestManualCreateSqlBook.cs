@@ -2,7 +2,6 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using Microsoft.EntityFrameworkCore;
-using SqlDataLayer;
 using SqlDataLayer.Classes;
 using SqlDataLayer.SqlBookEfCore;
 using TestSupport.EfHelpers;
