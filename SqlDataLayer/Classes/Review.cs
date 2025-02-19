@@ -14,7 +14,7 @@ namespace SqlDataLayer.Classes
         [MaxLength(NameLength)]
         public string VoterName { get; set; }
 
-        public int NumStars { get; set; }
+        public byte NumStars { get; set; }
         public string Comment { get; set; }
 
         //-----------------------------------------

@@ -6,37 +6,58 @@ using SqlDataLayer.Classes;
 using Microsoft.IdentityModel.Tokens;
 using TestSupport.Helpers;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
+using SqlDataLayer.SqlBookEfCore;
 
 namespace GenerateBooks;
 
-public static class CreateSqlBooksFromManningData
+public class CreateSqlBooksFromManningData
 {
     private const string ImageUrlPrefix = "https://images.manning.com/360/480/resize/";
-    public const string PublisherString = "Manning publications";
+    private const string PublisherString = "Manning publications";
+
+    //Random is used to create random review star ratings.
+    //The pseudo-random is the same every time so that we can compare different tests  
+    private static readonly Random Random = new Random(1);
+
+    private List<ManningBooksJson> SummaryJson { get; init; }
+    private Dictionary<int,ManningDetailsJson> DetailDict { get; init; }
+    private Dictionary<string, Tag> TagsDict { get; init; }
+    private Dictionary<string, Author> AuthorsDict { get; init; }
+
+    public CreateSqlBooksFromManningData(BookSqlDbContext context)
+    {
+        //This gets the Manning data which we use  
+        var summaryFilePath = TestData.GetFilePath("ManningBooks-20200814.json");
+        SummaryJson = JsonConvert.DeserializeObject<List<ManningBooksJson>>(
+            File.ReadAllText(summaryFilePath));
+        var detailFilePath = TestData.GetFilePath("ManningDetails-20200723.json");
+        DetailDict = JsonConvert.DeserializeObject<List<ManningDetailsJson>>(
+                File.ReadAllText(detailFilePath))
+            .ToDictionary(x => x.productId);
+
+        //These hold a dictionary holding the Tags and Authors which is 
+        TagsDict = SummaryJson.SelectMany(x => x.tags ?? []).Distinct().ToList()
+            .ToDictionary(x => x, y => new Tag { TagId = y });
+        AuthorsDict = NormalizeAuthorsToCommaDelimited(SummaryJson);
+    }
+
 
     /// <summary>
     /// This creates Books from the real-world data from Manning publications. To handle
     /// SQL books, where you can't have duplicable Author or Tag entity.
-    /// Note: These generated books don't have any Reviews or PriceOffer entities. 
+    /// Note: It also adds reviews and promotions
     /// </summary>
-    /// <param name="numBooks">Optional: number books to take, if not set you get all books</param>
+    /// <param name="numBooks">number books to take, if not set you get all books</param>
+    /// <param name="maxReviewsPerBook">This sets the maximum reviews that a book can have</param>
+    /// <param name="addPromotionEvery">This adds a Promotion on every addPromotionEvery book</param>
     /// <returns>Sql Books</returns>
-    public static IEnumerable<Book> CreateSqlManningBooks(int numBooks = 1000)
+    public IEnumerable<Book> CreateSqlManningBooks(int numBooks, 
+        int maxReviewsPerBook = 12, int addPromotionEvery = 7)
     {
-        //We take all the 
-        var summaryFilePath = TestData.GetFilePath("ManningBooks-20200814.json");
-        var summaryJson = JsonConvert.DeserializeObject<List<ManningBooksJson>>(
-            File.ReadAllText(summaryFilePath)).Take(numBooks);
-        var detailFilePath = TestData.GetFilePath("ManningDetails-20200723.json");
-        var detailDict = JsonConvert.DeserializeObject<List<ManningDetailsJson>>(
-                File.ReadAllText(detailFilePath))!.Take(numBooks)
-            .ToDictionary(x => x.productId);
+        var makeBookTitlesDistinct = numBooks > SummaryJson.Count;
 
-        var tagsNames = summaryJson.SelectMany(x => x.tags ?? []).Distinct().ToList();
-        var tagsDict = tagsNames.ToDictionary(x => x, y => new Tag{TagId = y});
-        var authorsDict = NormalizeAuthorsToCommaDelimited(summaryJson);
-
-        foreach (var jsonBook in summaryJson.Where(x => !x.authorshipDisplay.IsNullOrEmpty()))
+        foreach (var jsonBook in SummaryJson.Where(x => !x.authorshipDisplay.IsNullOrEmpty()))
         {
             var fullImageUrl = ImageUrlPrefix + jsonBook.imageUrl;
             var publishedOn = DateOnly.FromDateTime(jsonBook.publishedDate ?? jsonBook.expectedPublishDate);
@@ -44,14 +65,13 @@ public static class CreateSqlBooksFromManningData
                 ? jsonBook.productOfferings.Select(x => x.price).Max()
                 : 100;
             var authors = jsonBook.authorshipDisplay.Split(',')
-                .Select(x => authorsDict[x].Name).ToList();
+                .Select(x => AuthorsDict[x].Name).ToList();
             var tags = (jsonBook.tags ?? [])
-                .Select(x => tagsDict[x]).ToList();
+                .Select(x => TagsDict[x]).ToList();
 
-            //ATTEMPT
             var book = new Book
             {
-                Title = jsonBook.title,
+                Title = makeBookTitlesDistinct ? $"{jsonBook.title} (copy {sectionNum})" : jsonBook.title,
                 Authors = new List<Author>(authors.Select(x => new Author { Name = x })),
                 PublishedOn = publishedOn,
                 Publisher = PublisherString,
@@ -68,24 +88,17 @@ public static class CreateSqlBooksFromManningData
                 order++;
             }
 
-            if (detailDict.ContainsKey(jsonBook.id))
+            if (DetailDict.ContainsKey(jsonBook.id))
             {
                 book.Details = new BookDetails
                 {
-                    Description = detailDict[jsonBook.id].description,
-                    AboutAuthor = detailDict[jsonBook.id].aboutAuthor,
-                    AboutReader = detailDict[jsonBook.id].aboutReader,
-                    AboutTechnology = detailDict[jsonBook.id].aboutTechnology,
-                    WhatsInside = detailDict[jsonBook.id].whatsInside,
+                    Description = DetailDict[jsonBook.id].description,
+                    AboutAuthor = DetailDict[jsonBook.id].aboutAuthor,
+                    AboutReader = DetailDict[jsonBook.id].aboutReader,
+                    AboutTechnology = DetailDict[jsonBook.id].aboutTechnology,
+                    WhatsInside = DetailDict[jsonBook.id].whatsInside,
                 };
             }
-            // else
-            // {
-            //     book.Details = new BookDetails
-            //     {
-            //         Description = BookDetails.NoDetailsAvailable
-            //     };
-            // }
 
             yield return book;
         }
