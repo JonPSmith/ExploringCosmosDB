@@ -26,6 +26,10 @@ namespace SqlServiceLayer.QueryObjects
                     var filterVote = int.Parse(filterValue); 
                     return books.Where(x => 
                         x.ReviewsAverageVotes > filterVote);
+                case FilterByOptions.ByVotesCache:
+                    var filterVoteCache = int.Parse(filterValue);
+                    return books.Where(x =>
+                        x.ReviewsAverageVotesCached > filterVoteCache);
                 case FilterByOptions.ByTags:
                     return books.Where(x => x.TagStrings.Any(y => y == filterValue));
                 case FilterByOptions.ByPublicationYear:
@@ -35,8 +39,7 @@ namespace SqlServiceLayer.QueryObjects
 
                     var filterYear = int.Parse(filterValue); 
                     return books.Where( 
-                        x => x.PublishedOn.Year == filterYear 
-                             && x.PublishedOn <= DateOnly.FromDateTime(DateTime.UtcNow)); 
+                        x => x.PublishedOn.Year == filterYear); 
                 default:
                     throw new ArgumentOutOfRangeException
                         (nameof(filterByOptions), filterByOptions, null);

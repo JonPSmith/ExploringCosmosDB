@@ -4,7 +4,6 @@
 using Xunit.Abstractions;
 using GenerateBooks;
 using Microsoft.EntityFrameworkCore;
-using SqlDataLayer.Classes;
 using SqlDataLayer.SqlBookEfCore;
 using TestSupport.EfHelpers;
 using Xunit.Extensions.AssertExtensions;
@@ -28,6 +27,8 @@ public class TestSqlCreateBooksFromManningData(ITestOutputHelper output)
 
         //VERIFY
         manningBooks.Length.ShouldEqual(numBooks);
+        _output.WriteLine( $"Num: {numBooks}, Good years: {manningBooks.Count(x => x.PublishedOn > new DateOnly(1000,1,1))}");
+        ;
     }
 
     [Fact]
@@ -57,7 +58,7 @@ public class TestSqlCreateBooksFromManningData(ITestOutputHelper output)
         foreach (var t in manningBooks)
         {
             //string.Format("{0}", i)
-            _output.WriteLine($"NumReviews {t.ReviewsCount:00}, Average: {t.ReviewsAverageVotes:#.###}");
+            _output.WriteLine($"NumReviews {t.ReviewsCount:00}, Average: {t.ReviewsAverageVotesCache:#.###}");
         }
     }
 

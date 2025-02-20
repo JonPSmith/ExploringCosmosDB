@@ -39,7 +39,7 @@ namespace SqlDataLayer.Classes
         public int ReviewsCount { get; set; }
 
         [ConcurrencyCheck]
-        public double ReviewsAverageVotes { get; set; }
+        public double ReviewsAverageVotesCache { get; set; }
 
         //---------------------------------------
         //relationships

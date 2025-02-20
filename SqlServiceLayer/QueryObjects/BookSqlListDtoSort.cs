@@ -19,7 +19,10 @@ namespace SqlServiceLayer.QueryObjects
                         x => x.BookId); 
                 case SortByOptions.ByVotes: 
                     return books.OrderByDescending(x => 
-                        x.ReviewsAverageVotes); 
+                        x.ReviewsAverageVotes);
+                case SortByOptions.ByVotesCache:
+                    return books.OrderByDescending(x =>
+                        x.ReviewsAverageVotesCached);
                 case SortByOptions.ByPublicationDate: 
                     return books.OrderByDescending( 
                         x => x.PublishedOn); 

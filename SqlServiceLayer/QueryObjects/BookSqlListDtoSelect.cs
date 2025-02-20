@@ -11,33 +11,28 @@ namespace SqlServiceLayer.QueryObjects
         public static IQueryable<BookSqlListDto> 
             MapBookToDto(this IQueryable<Book> books) 
         {
-            return books.Select(p      => new BookSqlListDto //#A
+            return books.Select(p      => new BookSqlListDto 
             {
-                BookId                 = p.BookId,           //#A
-                Title                  = p.Title,            //#A
-                PublishedOn            = p.PublishedOn,      //#A
-                OrgPrice               = p.OrgPrice,         //#B
-                ActualPrice            = p.ActualPrice,      //#B
-                PromotionText          = p.PromotionalText,  //#B
-                AuthorsOrdered         = string.Join(", ", //#C
-                    p.BookAuthors                          //#C
-                        .OrderBy(q     => q.Order)         //#C
-                        .Select(q      => q.Author.Name)), //#C
-                TagStrings             = p.Tags            //#C
-                    .Select(x => x.TagId).ToArray(),       //#C
-                ReviewsCount           = p.Reviews.Count(), //#D
-                ReviewsAverageVotes    =                    //#D
-                    p.Reviews.Select(y =>                   //#D
-                        (double?)y.NumStars).Average(),     //#D
+                BookId                 = p.BookId,           
+                Title                  = p.Title,            
+                PublishedOn            = p.PublishedOn,      
+                OrgPrice               = p.OrgPrice,         
+                ActualPrice            = p.ActualPrice,      
+                PromotionText          = p.PromotionalText,  
+                AuthorsOrdered         = string.Join(", ", 
+                    p.BookAuthors                          
+                        .OrderBy(q     => q.Order)         
+                        .Select(q      => q.Author.Name)), 
+                TagStrings             = p.Tags            
+                    .Select(x => x.TagId).ToArray(),       
+                ReviewsCount           = p.Reviews.Count(), 
+                ReviewsAverageVotes    =                    
+                    p.Reviews.Select(y =>                   
+                        (double?)y.NumStars).Average(),   
+                ReviewsAverageVotesCached = p.ReviewsAverageVotesCache,
                 ManningBookUrl         = p.ManningBookUrl
             });
         }
 
-        /*********************************************************
-        #A Good practice: Only load the properties you need
-        #B Good practice: Part 3 uses DDD so that the price promotion alters the ActualPrice 
-        #C Good practice: Don't load the whole relationships, but just the parts you need 
-        #D Good practice: The ReviewsCount and ReviewsAverageVotes are calculated in the database
-        * *******************************************************/
     }
 }

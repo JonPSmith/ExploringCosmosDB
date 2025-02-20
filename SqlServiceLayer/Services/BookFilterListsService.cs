@@ -17,6 +17,15 @@ public class BookFilterListsService
             new List<DropdownTuple> { new DropdownTuple { Value = "0", Text = "" } });
         FilterItemsDictionary.Add(FilterByOptions.ByVotes, new List<DropdownTuple>
         {
+            new DropdownTuple { Value = "5", Text = "5 stars and up" },
+            new DropdownTuple { Value = "4", Text = "4 stars and up" },
+            new DropdownTuple { Value = "3", Text = "3 stars and up" },
+            new DropdownTuple { Value = "2", Text = "2 stars and up" },
+            new DropdownTuple { Value = "1", Text = "1 star and up" }
+        });
+        FilterItemsDictionary.Add(FilterByOptions.ByVotesCache, new List<DropdownTuple>
+        {
+            new DropdownTuple { Value = "5", Text = "5 stars and up" },
             new DropdownTuple { Value = "4", Text = "4 stars and up" },
             new DropdownTuple { Value = "3", Text = "3 stars and up" },
             new DropdownTuple { Value = "2", Text = "2 stars and up" },

@@ -17,10 +17,15 @@
   <ItemGroup>
     <ProjectReference Include="..\GenerateBooks\GenerateBooks.csproj" />
     <ProjectReference Include="..\SqlDataLayer\SqlDataLayer.csproj" />
+    <ProjectReference Include="..\SqlServiceLayer\SqlServiceLayer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="UnitCommands\" />
   </ItemGroup>
 
 </Project>

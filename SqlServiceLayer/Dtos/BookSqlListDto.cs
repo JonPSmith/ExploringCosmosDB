@@ -15,5 +15,6 @@ public class BookSqlListDto
     public string[] TagStrings { get; set; }
     public int ReviewsCount { get; set; }
     public double? ReviewsAverageVotes { get; set; }
+    public double ReviewsAverageVotesCached { get; set; }
     public string ManningBookUrl { get; set; }
 }

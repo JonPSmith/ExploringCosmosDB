@@ -8,7 +8,6 @@ using TestSupport.EfHelpers;
 using Xunit.Abstractions;
 using Xunit.Extensions.AssertExtensions;
 
-
 namespace Test.UnitTests;
 
 public class TestManualCreateSqlBook(ITestOutputHelper output)

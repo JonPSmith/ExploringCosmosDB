@@ -76,6 +76,9 @@ public class CreateSqlBooksFromManningData
  
             var fullImageUrl = ImageUrlPrefix + jsonBook.imageUrl;
             var publishedOn = DateOnly.FromDateTime(jsonBook.publishedDate ?? jsonBook.expectedPublishDate);
+            //the code below makes sure all the Books have a valid date
+            if (publishedOn.Year < 1000)
+                publishedOn = new DateOnly(2000, 1, 1);
             var price = jsonBook.productOfferings.Any()
                 ? jsonBook.productOfferings.Select(x => x.price).Max()
                 : 100;
@@ -114,11 +117,11 @@ public class CreateSqlBooksFromManningData
             if (book.Reviews?.Count > 0)
             {
                 book.ReviewsCount = book.Reviews.Count;
-                book.ReviewsAverageVotes = book.Reviews != null && book.Reviews.Any()
+                book.ReviewsAverageVotesCache = book.Reviews != null && book.Reviews.Any()
                     ? book.Reviews.Average(y => y.NumStars)
                     : 0.0;
             }
-            book.ReviewsAverageVotes = book.Reviews != null && book.Reviews.Any()
+            book.ReviewsAverageVotesCache = book.Reviews != null && book.Reviews.Any()
                 ? book.Reviews.Average(y => y.NumStars)
                 : 0.0;
 
