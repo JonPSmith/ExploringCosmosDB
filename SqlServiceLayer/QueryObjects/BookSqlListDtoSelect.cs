@@ -2,16 +2,16 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using SqlDataLayer.Classes;
-using SqlServiceLayer.Dtos;
+using CommonServiceLayer.Dtos;
 
 namespace SqlServiceLayer.QueryObjects
 {
     public static class BookSqlListDtoSelect
     {
-        public static IQueryable<BookSqlListDto> 
+        public static IQueryable<BookListDto> 
             MapBookToDto(this IQueryable<Book> books) 
         {
-            return books.Select(p      => new BookSqlListDto 
+            return books.Select(p      => new BookListDto 
             {
                 BookId                 = p.BookId,           
                 Title                  = p.Title,            

@@ -5,12 +5,14 @@ using CommonServiceLayer;
 using GenerateBooks;
 using Microsoft.EntityFrameworkCore;
 using SqlDataLayer.SqlBookEfCore;
-using SqlServiceLayer.Dtos;
+using CommonServiceLayer.Dtos;
+using CommonServiceLayer.Services;
 using SqlServiceLayer.QueryObjects;
 using TestSupport.Attributes;
 using TestSupport.EfHelpers;
 using Xunit.Abstractions;
 using Xunit.Extensions.AssertExtensions;
+using Test.Helpers;
 
 namespace Test.UnitTests;
 
@@ -26,7 +28,7 @@ public class TestSqlBookPerformance
         var options = this.CreateUniqueClassOptions<BookSqlDbContext>();
         using var context = new BookSqlDbContext(options);
 
-        //only create the data
+        //only create the data if the database is empty
         if (context.Database.CanConnect())
         {
             if (context.Books.Count() != 0)
@@ -35,7 +37,6 @@ public class TestSqlBookPerformance
 
         //Need to fill the database with sample data
         WipeAndFillDatabase(options);
-
     }
 
     private void WipeAndFillDatabase(DbContextOptions<BookSqlDbContext> options)
@@ -68,11 +69,12 @@ public class TestSqlBookPerformance
         using var context = new BookSqlDbContext(options);
 
         //ATTEMPT
-        BookSqlListDto[] books;
+        BookListDto[] books;
         books = context.Books.MapBookToDto().AsSplitQuery().ToArray();
 
         //VERIFY
         books.Length.ShouldEqual(_numBooks);
+        _output.WriteLine($"Total query time is {logs.FindTotalQueryTime()} ms.");
         foreach (var log in logs)
         {
             _output.WriteLine(log?[0..30]);
@@ -91,11 +93,12 @@ public class TestSqlBookPerformance
         using var context = new BookSqlDbContext(options);
 
         //ATTEMPT
-        BookSqlListDto[] books;
+        BookListDto[] books;
         books = context.Books.MapBookToDto().OrderBooksBy(SortByOptions.ByPublicationDate).AsSplitQuery().ToArray();
 
         //VERIFY
         books.Length.ShouldEqual(_numBooks);
+        _output.WriteLine($"Total query time is {logs.FindTotalQueryTime()} ms.");
         foreach (var log in logs)
         {
             _output.WriteLine(_seeAllLogString ? log : log?[0..30]);
@@ -111,11 +114,12 @@ public class TestSqlBookPerformance
         using var context = new BookSqlDbContext(options);
 
         //ATTEMPT
-        BookSqlListDto[] books;
+        BookListDto[] books;
         books = context.Books.MapBookToDto().OrderBooksBy(SortByOptions.ByVotes).AsSplitQuery().ToArray();
 
         //VERIFY
         books.Length.ShouldEqual(_numBooks);
+        _output.WriteLine($"Total query time is {logs.FindTotalQueryTime()} ms.");
         foreach (var log in logs)
         {
             _output.WriteLine(_seeAllLogString ? log : log?[0..30]);
@@ -131,11 +135,12 @@ public class TestSqlBookPerformance
         using var context = new BookSqlDbContext(options);
 
         //ATTEMPT
-        BookSqlListDto[] books;
+        BookListDto[] books;
         books = context.Books.MapBookToDto().OrderBooksBy(SortByOptions.ByVotesCache).AsSplitQuery().ToArray();
 
         //VERIFY
         books.Length.ShouldEqual(_numBooks);
+        _output.WriteLine($"Total query time is {logs.FindTotalQueryTime()} ms.");
         foreach (var log in logs)
         {
             _output.WriteLine(_seeAllLogString ? log : log?[0..30]);
@@ -156,23 +161,16 @@ public class TestSqlBookPerformance
         using var context = new BookSqlDbContext(options);
 
         //ATTEMPT
-        BookSqlListDto[] books;
+        BookListDto[] books;
         books = context.Books.MapBookToDto().FilterBooksBy(FilterByOptions.ByPublicationYear, year).AsSplitQuery().ToArray();
 
         //VERIFY
         _output.WriteLine($"Found {books.Length} books for year {year} out of {_numBooks} books");
+        _output.WriteLine($"Total query time is {logs.FindTotalQueryTime()} ms.");
         foreach (var log in logs)
         {
             _output.WriteLine(_seeAllLogString ? log : log?[0..30]);
         }
-        //Code to show what years are used
-        // var listOfYears = context.Books
-        //     .Select(x => x.PublishedOn.Year)
-        //     .Distinct().Order().ToList();
-        // foreach (var year in listOfYears)
-        // {
-        //     _output.WriteLine($"{year}");
-        // }
     }
 
     [Fact]
@@ -184,11 +182,12 @@ public class TestSqlBookPerformance
         using var context = new BookSqlDbContext(options);
 
         //ATTEMPT
-        BookSqlListDto[] books;
+        BookListDto[] books;
         books = context.Books.MapBookToDto().FilterBooksBy(FilterByOptions.ByVotes, "4").AsSplitQuery().ToArray();
 
         //VERIFY
         _output.WriteLine($"Found {books.Length} books with 4 or higher votes out of {_numBooks} books");
+        _output.WriteLine($"Total query time is {logs.FindTotalQueryTime()} ms.");
         foreach (var log in logs)
         {
             _output.WriteLine(_seeAllLogString ? log : log?[0..30]);
@@ -204,11 +203,12 @@ public class TestSqlBookPerformance
         using var context = new BookSqlDbContext(options);
 
         //ATTEMPT
-        BookSqlListDto[] books;
+        BookListDto[] books;
         books = context.Books.MapBookToDto().FilterBooksBy(FilterByOptions.ByVotesCache, "4").AsSplitQuery().ToArray();
 
         //VERIFY
         _output.WriteLine($"Found {books.Length} books with 4 or higher votes out of {_numBooks} books");
+        _output.WriteLine($"Total query time is {logs.FindTotalQueryTime()} ms.");
         foreach (var log in logs)
         {
             _output.WriteLine(_seeAllLogString ? log : log?[0..30]);
@@ -224,11 +224,12 @@ public class TestSqlBookPerformance
         using var context = new BookSqlDbContext(options);
 
         //ATTEMPT
-        BookSqlListDto[] books;
+        BookListDto[] books;
         books = context.Books.MapBookToDto().FilterBooksBy(FilterByOptions.ByTags, "C#").AsSplitQuery().ToArray();
 
         //VERIFY
         _output.WriteLine($"Found {books.Length} books with tag 'C#' {_numBooks} books");
+        _output.WriteLine($"Total query time is {logs.FindTotalQueryTime()} ms.");
         foreach (var log in logs)
         {
             _output.WriteLine(_seeAllLogString ? log : log?[0..30]);

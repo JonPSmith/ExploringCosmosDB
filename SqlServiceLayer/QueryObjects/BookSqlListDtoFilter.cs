@@ -2,7 +2,7 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using CommonServiceLayer;
-using SqlServiceLayer.Dtos;
+using CommonServiceLayer.Dtos;
 
 namespace SqlServiceLayer.QueryObjects
 {
@@ -11,8 +11,8 @@ namespace SqlServiceLayer.QueryObjects
     {
         public const string AllBooksNotPublishedString = "Coming Soon";
 
-        public static IQueryable<BookSqlListDto> FilterBooksBy(
-            this IQueryable<BookSqlListDto> books,
+        public static IQueryable<BookListDto> FilterBooksBy(
+            this IQueryable<BookListDto> books,
             FilterByOptions filterByOptions, string filterValue) 
         {
             if (string.IsNullOrEmpty(filterValue)) 

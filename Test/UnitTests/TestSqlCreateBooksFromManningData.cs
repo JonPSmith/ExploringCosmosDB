@@ -7,12 +7,28 @@ using Microsoft.EntityFrameworkCore;
 using SqlDataLayer.SqlBookEfCore;
 using TestSupport.EfHelpers;
 using Xunit.Extensions.AssertExtensions;
+using Newtonsoft.Json.Linq;
 
 namespace Test.UnitTests;
 
 public class TestSqlCreateBooksFromManningData(ITestOutputHelper output)
 {
     private readonly ITestOutputHelper _output = output;
+
+    [Fact]
+    public void TestCreateSqlManningBooks_OneBook()
+    {
+        //SETUP
+        var creator = new CreateSqlBooksFromManningData();
+
+        //ATTEMPT
+        var book = creator.CreateSqlManningBooks(1).First();
+
+        //VERIFY
+        _output.WriteLine(book.ToString());
+        book.ToString().ShouldEqual("Graph Databases in Action by Dave Bechberger, Josh Perryman. " +
+                                    "Price 49.99, no reviews, Published by Manning publications on 15/11/2020, Tags: Data");
+    }
 
     [Theory]
     [InlineData(10)]
@@ -27,8 +43,7 @@ public class TestSqlCreateBooksFromManningData(ITestOutputHelper output)
 
         //VERIFY
         manningBooks.Length.ShouldEqual(numBooks);
-        _output.WriteLine( $"Num: {numBooks}, Good years: {manningBooks.Count(x => x.PublishedOn > new DateOnly(1000,1,1))}");
-        ;
+        numBooks.ShouldEqual(manningBooks.First().Title.EndsWith("(copy 0)") ? 1000 : 10);
     }
 
     [Fact]
@@ -36,13 +51,71 @@ public class TestSqlCreateBooksFromManningData(ITestOutputHelper output)
     {
         //SETUP
         var creator = new CreateSqlBooksFromManningData();
-
+        
         //ATTEMPT
-        var manningBooks = creator.CreateSqlManningBooks(762+1).ToArray();
+        var manningBooks = creator.CreateSqlManningBooks(creator.NumManningBooksJson + 1).ToArray();
 
         //VERIFY
         manningBooks[0].Title.ShouldEndWith("(copy 0)");
-        manningBooks[762].Title.ShouldEndWith("(copy 1)");
+        manningBooks[creator.NumManningBooksJson].Title.ShouldEndWith("(copy 1)");
+        manningBooks[0].Title.Substring(0, manningBooks[0].Title.Length - "(copy 0)".Length)
+            .ShouldEqual(manningBooks[creator.NumManningBooksJson].Title.Substring(0, manningBooks[0].Title.Length - "(copy 0)".Length));
+        _output.WriteLine($"NumManningBooksJson is {creator.NumManningBooksJson}");
+    }
+
+    [Fact]
+    public void TestCreateSqlManningBooks_TagsProfile()
+    {
+        //SETUP
+        var creator = new CreateSqlBooksFromManningData();
+        var manningBooks = creator.CreateSqlManningBooks(creator.NumManningBooksJson).ToArray();
+        Dictionary<string, int> tagNumDict = new Dictionary<string, int>();
+        foreach (var tagName in creator.AllTagsNames)
+        {
+            tagNumDict.Add(tagName,0);
+        }
+
+        //ATTEMPT
+        foreach (var book in manningBooks)
+        {
+            foreach (var tag in book.Tags)
+            {
+                tagNumDict[tag.TagId] += 1;
+            }
+        }
+
+        //VERIFY
+        
+        foreach (var keyValue in tagNumDict.OrderBy(x => x.Value))
+        {
+            _output.WriteLine($"{keyValue.Key}: {keyValue.Value}");
+        }
+    }
+
+    [Fact]
+    public void TestCreateSqlManningBook_PublishYearProfile()
+    {
+        //SETUP
+        var creator = new CreateSqlBooksFromManningData();
+        var manningBooks = creator.CreateSqlManningBooks(creator.NumManningBooksJson).ToArray();
+        Dictionary<int, int> publishYearDict = new Dictionary<int, int>();
+        foreach (var year in manningBooks.Select(x => x.PublishedOn.Year).Distinct())
+        {
+            publishYearDict.Add(year, 0);
+        }
+
+        //ATTEMPT
+        foreach (var book in manningBooks)
+        {
+            publishYearDict[book.PublishedOn.Year] += 1;
+        }
+
+        //VERIFY
+
+        foreach (var keyValue in publishYearDict.OrderBy(x => x.Key))
+        {
+            _output.WriteLine($"{keyValue.Key}, {keyValue.Value}");
+        }
     }
 
     [Fact]

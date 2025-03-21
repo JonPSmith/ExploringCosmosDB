@@ -2,16 +2,17 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using CommonServiceLayer;
-using SqlDataLayer.SqlBookEfCore;
+using CosmosDataLayer.CosmosBookEfCore;
+using Microsoft.Azure.Cosmos.Linq;
 
-namespace SqlServiceLayer.Services;
+namespace CosmosServiceLayer.Services;
 
-public class BookFilterListsService
+public class OneBigFilterListsService
 {
     public Dictionary<Enum, List<DropdownTuple>> FilterItemsDictionary { get; private set; } =
         new Dictionary<Enum, List<DropdownTuple>>();
 
-    public BookFilterListsService(BookSqlDbContext context)
+    public OneBigFilterListsService(BookCosmosContext context)
     {
         FilterItemsDictionary.Add(FilterByOptions.NoFilter,
             new List<DropdownTuple> { new DropdownTuple { Value = "0", Text = "" } });
@@ -32,14 +33,23 @@ public class BookFilterListsService
             new DropdownTuple { Value = "1", Text = "1 star and up" }
         });
 
-        FilterItemsDictionary.Add(FilterByOptions.ByTags, new List<DropdownTuple>(context.Tags
+        //Use a dictionary to hold each distinct name  
+        var tagNames = new Dictionary<string, int>();
+        foreach (var tagsPerBook in context.OneBigBooks.Select(x => x.Tags))
+        {
+            foreach (var tag in tagsPerBook)
+            {
+                tagNames.Add(tag, 1);
+            }
+        }
+        FilterItemsDictionary.Add(FilterByOptions.ByTags, tagNames.Keys
             .Select(x => new DropdownTuple
             {
-                Value = x.TagId,
-                Text = x.TagId
-            }).ToList()));
+                Value = x.ToString(),
+                Text = x.ToString()
+            }).ToList());
 
-        FilterItemsDictionary.Add(FilterByOptions.ByPublicationYear, new List<DropdownTuple>(context.Books
+        FilterItemsDictionary.Add(FilterByOptions.ByPublicationYear, new List<DropdownTuple>(context.OneBigBooks
             .Where(x => x.PublishedOn <= DateOnly.FromDateTime(DateTime.Today))
             .Select(x => x.PublishedOn.Year)
             .Distinct()

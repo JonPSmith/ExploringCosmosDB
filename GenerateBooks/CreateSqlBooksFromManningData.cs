@@ -16,7 +16,6 @@ public class CreateSqlBooksFromManningData
     private const string PublisherString = "Manning publications";
     private const string ReplacementAuthor = "unknown author";
 
-    
     private static readonly List<string> ReviewComments =
         //0               1                 2               3         4               5            6
         ["Terrible book", "Didn't like it", "It was so-so", "useful", "looking good", "very good", "WOW, great book"];
@@ -26,10 +25,13 @@ public class CreateSqlBooksFromManningData
     private static readonly Random Random = new Random(1);
 
     private List<ManningBooksJson> SummaryJson { get; init; }
-    private int NumManningBooksJson { get; init; }
     private Dictionary<int,ManningDetailsJson> DetailDict { get; init; }
     private Dictionary<string, Tag> TagsDict { get; init; }
     private Dictionary<string, Author> AuthorsDict { get; init; }
+
+    //Useful data used when testing / performance code
+    public int NumManningBooksJson { get; init; }
+    public List<string> AllTagsNames { get; init; }
 
     /// <summary>
     /// This sets up the data to create many books
@@ -46,7 +48,8 @@ public class CreateSqlBooksFromManningData
             .ToDictionary(x => x.productId);
 
         //These hold a dictionary holding the Tags and Authors which are used when building SQL Books
-        TagsDict = SummaryJson.SelectMany(x => x.tags ?? []).Distinct().ToList()
+        AllTagsNames = SummaryJson.SelectMany(x => x.tags ?? []).Distinct().ToList();
+        TagsDict = AllTagsNames
             .ToDictionary(x => x, y => new Tag { TagId = y });
         AuthorsDict = NormalizeAuthorsToCommaDelimited(SummaryJson);
         AuthorsDict.Add(ReplacementAuthor, new Author{Name = ReplacementAuthor } );
@@ -78,7 +81,7 @@ public class CreateSqlBooksFromManningData
             var publishedOn = DateOnly.FromDateTime(jsonBook.publishedDate ?? jsonBook.expectedPublishDate);
             //the code below makes sure all the Books have a valid date
             if (publishedOn.Year < 1000)
-                publishedOn = new DateOnly(2000, 1, 1);
+                publishedOn = new DateOnly(2018, 1, 1);
             var price = jsonBook.productOfferings.Any()
                 ? jsonBook.productOfferings.Select(x => x.price).Max()
                 : 100;

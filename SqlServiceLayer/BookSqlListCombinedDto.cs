@@ -2,13 +2,13 @@
 // Licensed under MIT license. See License.txt in the project root for license information.
 
 using CommonServiceLayer;
-using SqlServiceLayer.Dtos;
+using CommonServiceLayer.Dtos;
 
 namespace SqlServiceLayer
 {
     public class BookSqlListCombinedDto
     {
-        public BookSqlListCombinedDto(SortFilterPageOptions sortFilterPageData, IEnumerable<BookSqlListDto> booksList)
+        public BookSqlListCombinedDto(SortFilterPageOptions sortFilterPageData, IEnumerable<BookListDto> booksList)
         {
             SortFilterPageData = sortFilterPageData;
             BooksList = booksList;
@@ -16,6 +16,6 @@ namespace SqlServiceLayer
 
         public SortFilterPageOptions SortFilterPageData { get; private set; }
 
-        public IEnumerable<BookSqlListDto> BooksList { get; private set; }
+        public IEnumerable<BookListDto> BooksList { get; private set; }
     }
 }

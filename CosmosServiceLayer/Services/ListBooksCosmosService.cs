@@ -1,21 +1,20 @@
 ﻿// Copyright (c) 2020 Jon P Smith, GitHub: JonPSmith, web: http://www.thereformedprogrammer.net/
 // Licensed under MIT license. See License.txt in the project root for license information.
 
-
 using CommonServiceLayer;
-using Microsoft.EntityFrameworkCore;
-using SqlDataLayer.SqlBookEfCore;
 using CommonServiceLayer.Dtos;
 using CommonServiceLayer.Services;
-using SqlServiceLayer.QueryObjects;
+using CosmosDataLayer.CosmosBookEfCore;
+using CosmosServiceLayer.QueryObjects;
+using Microsoft.EntityFrameworkCore;
 
-namespace SqlServiceLayer.Services
+namespace CosmosServiceLayer.Services
 {
-    public class ListBooksSqlService : IListBooksSqlService
+    public class ListBooksCosmosService : IListBooksCosmosService
     {
-        private readonly BookSqlDbContext _context;
+        private readonly BookCosmosContext _context;
 
-        public ListBooksSqlService(BookSqlDbContext context)
+        public ListBooksCosmosService(BookCosmosContext context)
         {
             _context = context;
         }
@@ -23,7 +22,7 @@ namespace SqlServiceLayer.Services
         public async Task<IQueryable<BookListDto>> SortFilterPageAsync
             (SortFilterPageOptions options)
         {
-            var booksQuery = _context.Books 
+            var booksQuery = _context.OneBigBooks
                 .AsNoTracking() 
                 .MapBookToDto() 
                 .OrderBooksBy(options.SortByOptions) 

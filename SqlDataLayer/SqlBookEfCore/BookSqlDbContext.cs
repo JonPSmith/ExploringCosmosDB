@@ -21,7 +21,7 @@ public class BookSqlDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        //Other way showm https://stackoverflow.com/questions/67589195/many-to-many-relationship-with-the-join-table-that-has-extra-data
+        //Other way show https://stackoverflow.com/questions/67589195/many-to-many-relationship-with-the-join-table-that-has-extra-data
         modelBuilder.Entity<BookAuthor>()
             .HasKey(x => new { x.BookId, x.AuthorId });
 
