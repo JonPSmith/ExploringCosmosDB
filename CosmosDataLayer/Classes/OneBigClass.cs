@@ -36,18 +36,18 @@ public class OneBigClass
     //---------------------------------------
     //relationships
 
-    public List<CosmosReview> CosmosReview { get; set; }
+    public List<CosmosReviews> CosmosReviews { get; set; }
     public List<string> Authors { get; set; }
     public List<string> Tags { get; set; }
     public PriceOffer Promotion { get; set; }
-    public BookDetails Details { get; set; }
+    public CosmosDetails Details { get; set; }
 
     public override string ToString()
     {
         var authors = String.Join(", ", Authors);
         var authorString = string.Join(", ", authors);
-        var reviewsString = CosmosReview.Any()
-            ? $"{CosmosReview.Count()} reviews, stars = {CosmosReview.Average(item => item.NumStars):#.##}"
+        var reviewsString = CosmosReviews.Any()
+            ? $"{CosmosReviews.Count()} reviews, stars = {CosmosReviews.Average(item => item.NumStars):#.##}"
             : "no reviews";
 
         var tagsString = !Tags.Any()

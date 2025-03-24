@@ -21,9 +21,9 @@ namespace CosmosServiceLayer.QueryObjects
                 PromotionText      = p.PromotionText,
                 AuthorsOrdered     = string.Join(", ", p.Authors),
                 TagStrings         = p.Tags.ToArray(),           
-                ReviewsCount       = p.CosmosReview.Count,
-                ReviewsAverageVotes    = p.CosmosReview.Any() 
-                    ? p.CosmosReview.Average(item => item.NumStars) : 0,
+                ReviewsCount       = p.CosmosReviews.Count,
+                ReviewsAverageVotes    = p.CosmosReviews.Any() 
+                    ? p.CosmosReviews.Average(item => item.NumStars) : 0,
                 ManningBookUrl         = p.ManningBookUrl
             });
         }

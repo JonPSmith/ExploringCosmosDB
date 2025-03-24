@@ -11,12 +11,13 @@ public static class CreateCosmosBooksFromManningData
     {
         var creator = new CreateSqlBooksFromManningData();
         var manningBooks = creator.CreateSqlManningBooks(numBooks, maxReviewsPerBook);
-
+        int id = 0;
         foreach (var book in manningBooks)
         {
-
+            id ++;
             var cosmosBook = new OneBigClass
             {
+                Id = id,                        //sets the id of the cosmos
                 Title = book.Title,
                 PublishedOn = book.PublishedOn,
                 Publisher = book.Publisher,
@@ -27,11 +28,34 @@ public static class CreateCosmosBooksFromManningData
                 //lists of strings
                 Authors = book.Authors.Select(x => x.Name).ToList(),
                 Tags = book.Tags.Select(x => x.TagId).ToList(),
-                //now the relationships 
-                CosmosReview = CosmosReview.ReviewsToCosmosReviews(book.Reviews).ToList(),
+                //now the simple relationships 
                 Promotion = book.Promotion,         //one-to-one, or null
-                Details = book.Details              //one-to-one, or null
+                
             };
+            if (book.Details != null)
+            {
+                cosmosBook.Details = new CosmosDetails
+                {
+                    Id = id,
+                    Description = book.Details.Description,
+                    AboutAuthor = book.Details.AboutAuthor,
+                    AboutReader = book.Details.AboutReader,
+                    AboutTechnology = book.Details.AboutTechnology,
+                    WhatsInside = book.Details.WhatsInside
+                };
+            }
+            cosmosBook.CosmosReviews = new List<CosmosReviews>();
+            foreach (var review in book.Reviews)
+            {
+                var cosmosReview = new CosmosReviews
+                {
+                    Id = id,
+                    Comment = review.Comment,
+                    NumStars = review.NumStars,
+                    VoterName = review.VoterName
+                };
+                cosmosBook.CosmosReviews.Add(cosmosReview); 
+            }
 
             yield return cosmosBook;
         }

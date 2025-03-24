@@ -6,9 +6,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CosmosDataLayer.Classes;
 
-public class CosmosReview
+public class CosmosReviews
 {
     public const int NameLength = 100;
+
+    public int Id { get; set; }
 
     [MaxLength(NameLength)]
     public string VoterName { get; set; }
@@ -16,12 +18,13 @@ public class CosmosReview
     public byte NumStars { get; set; }
     public string Comment { get; set; }
 
-    public static IEnumerable<CosmosReview> ReviewsToCosmosReviews(IEnumerable<Review> reviews)
+    public static IEnumerable<CosmosReviews> ReviewsToCosmosReviews(IEnumerable<CosmosReviews> reviews)
     {
         foreach (var review in reviews)
         {
-            yield return new CosmosReview
+            yield return new CosmosReviews
             {
+                Id = review.Id,
                 Comment = review.Comment,
                 NumStars = review.NumStars,
                 VoterName = review.VoterName
